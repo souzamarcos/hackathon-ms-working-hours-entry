@@ -45,6 +45,10 @@ public class OrderItemAdditional {
         return product;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public OrderItemAdditional(Long id, Long orderItemId, Long productId) {
         this.id = id;
         this.orderItemId = orderItemId;

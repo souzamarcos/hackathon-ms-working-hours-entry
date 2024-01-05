@@ -2,6 +2,7 @@ package com.fiap.burger.controller.controller;
 
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
+import com.fiap.burger.gateway.order.gateway.DefaultProductGateway;
 import com.fiap.burger.usecase.misc.exception.OrderNotFoundException;
 import com.fiap.burger.usecase.usecase.DefaultOrderUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,9 @@ class DefaultOrderControllerTest {
     @Mock
     DefaultOrderUseCase useCase;
 
+    @Mock
+    DefaultProductGateway productGateway;
+
     @InjectMocks
     DefaultOrderController controller;
 
@@ -36,6 +40,7 @@ class DefaultOrderControllerTest {
         var expected = new Order(null, Collections.emptyList(), OrderStatus.FINALIZADO);
 
         when(useCase.findById(id)).thenReturn(expected);
+        when(productGateway.findByIds(anyList())).thenReturn(Collections.emptyList());
 
         Order actual = controller.findById(id);
 

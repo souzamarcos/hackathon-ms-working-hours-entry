@@ -1,2 +1,0 @@
-ALTER TABLE client
-ADD CONSTRAINT uk_cpf UNIQUE (cpf);

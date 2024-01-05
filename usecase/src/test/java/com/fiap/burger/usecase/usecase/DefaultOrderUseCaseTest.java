@@ -2,10 +2,8 @@ package com.fiap.burger.usecase.usecase;
 
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.entity.product.Category;
-import com.fiap.burger.usecase.adapter.gateway.ClientGateway;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
-import com.fiap.burger.usecase.misc.ClientBuilder;
 import com.fiap.burger.usecase.misc.OrderBuilder;
 import com.fiap.burger.usecase.misc.ProductBuilder;
 import com.fiap.burger.usecase.misc.exception.EmptyAttributeException;
@@ -29,8 +27,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class DefaultOrderUseCaseTest {
     private static final String TOKEN_SECRET = "TEST-SECRET";
@@ -41,9 +46,6 @@ class DefaultOrderUseCaseTest {
 
     @Mock
     ProductGateway productGateway;
-
-    @Mock
-    ClientGateway clientGateway;
 
     @InjectMocks
     DefaultOrderUseCase useCase;
@@ -125,11 +127,9 @@ class DefaultOrderUseCaseTest {
     void shouldInsertOrder() {
         var orderToInsert = new OrderBuilder().toInsert();
         var order = new OrderBuilder().withTotal(40.0).build();
-        var client = new ClientBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).withValue(30.0).build(), new ProductBuilder().withId(2L).withValue(10.0).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
-        when(clientGateway.findById(client.getId())).thenReturn(client);
         when(productGateway.findByIds(productIds)).thenReturn(products);
         when(orderGateway.save(orderToInsert)).thenReturn(order);
 
@@ -139,7 +139,6 @@ class DefaultOrderUseCaseTest {
             assertEquals(order, actual);
         }
 
-        verify(clientGateway, times(1)).findById(client.getId());
         verify(productGateway, times(1)).findByIds(productIds);
         verify(orderGateway, times(1)).save(orderToInsert);
     }
@@ -158,7 +157,6 @@ class DefaultOrderUseCaseTest {
 
         assertEquals(order, actual);
 
-        verify(clientGateway, times(0)).findById(any());
         verify(productGateway, times(1)).findByIds(productIds);
         verify(orderGateway, times(1)).save(orderToInsert);
     }
@@ -166,16 +164,13 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderHasInvalidStatusToInsert() {
         var orderToInsert = new OrderBuilder().withStatus(OrderStatus.FINALIZADO).toInsert();
-        var client = new ClientBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).build(), new ProductBuilder().withId(2L).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
-        when(clientGateway.findById(client.getId())).thenReturn(client);
         when(productGateway.findByIds(productIds)).thenReturn(products);
 
         assertThrows(InvalidAttributeException.class, () -> useCase.insert(orderToInsert));
 
-        verify(clientGateway, times(0)).findById(any());
         verify(productGateway, times(0)).findByIds(any());
         verify(orderGateway, times(0)).save(any());
     }
@@ -186,7 +181,6 @@ class DefaultOrderUseCaseTest {
 
         assertThrows(NullAttributeException.class, () -> useCase.insert(orderToInsert));
 
-        verify(clientGateway, times(0)).findById(any());
         verify(productGateway, times(0)).findByIds(any());
         verify(orderGateway, times(0)).save(any());
     }
@@ -197,24 +191,6 @@ class DefaultOrderUseCaseTest {
 
         assertThrows(EmptyAttributeException.class, () -> useCase.insert(orderToInsert));
 
-        verify(clientGateway, times(0)).findById(any());
-        verify(productGateway, times(0)).findByIds(any());
-        verify(orderGateway, times(0)).save(any());
-    }
-
-    @Test
-    void shouldThrowInvalidAttributeExceptionWhenOrderClientNotFound() {
-        var orderToInsert = new OrderBuilder().toInsert();
-        var client = new ClientBuilder().build();
-
-        when(clientGateway.findById(client.getId())).thenReturn(null);
-
-        try (MockedStatic<SecretUtils> utilities = Mockito.mockStatic(SecretUtils.class)) {
-            utilities.when(SecretUtils::getTokenJwtSecret).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
-            assertThrows(InvalidAttributeException.class, () -> useCase.insert(orderToInsert));
-        }
-
-        verify(clientGateway, times(1)).findById(client.getId());
         verify(productGateway, times(0)).findByIds(any());
         verify(orderGateway, times(0)).save(any());
     }
@@ -222,11 +198,9 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderProductNotFound() {
         var orderToInsert = new OrderBuilder().toInsert();
-        var client = new ClientBuilder().build();
         var products = List.of(new ProductBuilder().withId(2L).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
-        when(clientGateway.findById(client.getId())).thenReturn(client);
         when(productGateway.findByIds(productIds)).thenReturn(products);
 
         try (MockedStatic<SecretUtils> utilities = Mockito.mockStatic(SecretUtils.class)) {
@@ -234,7 +208,6 @@ class DefaultOrderUseCaseTest {
             assertThrows(InvalidAttributeException.class, () -> useCase.insert(orderToInsert));
         }
 
-        verify(clientGateway, times(1)).findById(client.getId());
         verify(productGateway, times(1)).findByIds(productIds);
         verify(orderGateway, times(0)).save(any());
     }
@@ -242,11 +215,9 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderProductHasInvalidCategory() {
         var orderToInsert = new OrderBuilder().toInsert();
-        var client = new ClientBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).withCategory(Category.ADICIONAL).build(), new ProductBuilder().withId(2L).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
-        when(clientGateway.findById(client.getId())).thenReturn(client);
         when(productGateway.findByIds(productIds)).thenReturn(products);
 
         try (MockedStatic<SecretUtils> utilities = Mockito.mockStatic(SecretUtils.class)) {
@@ -254,7 +225,6 @@ class DefaultOrderUseCaseTest {
             assertThrows(InvalidAttributeException.class, () -> useCase.insert(orderToInsert));
         }
 
-        verify(clientGateway, times(1)).findById(client.getId());
         verify(productGateway, times(1)).findByIds(productIds);
         verify(orderGateway, times(0)).save(any());
     }
@@ -262,11 +232,9 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderAdditionalProductNotFound() {
         var orderToInsert = new OrderBuilder().toInsert();
-        var client = new ClientBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).build());
         var productIds = List.of(1L, 2L);
 
-        when(clientGateway.findById(client.getId())).thenReturn(client);
         when(productGateway.findByIds(productIds)).thenReturn(products);
 
         try (MockedStatic<SecretUtils> utilities = Mockito.mockStatic(SecretUtils.class)) {
@@ -274,7 +242,6 @@ class DefaultOrderUseCaseTest {
             assertThrows(InvalidAttributeException.class, () -> useCase.insert(orderToInsert));
         }
 
-        verify(clientGateway, times(1)).findById(client.getId());
         verify(productGateway, times(1)).findByIds(productIds);
         verify(orderGateway, times(0)).save(any());
     }
@@ -282,11 +249,9 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderAdditionalProductHasInvalidCategory() {
         var orderToInsert = new OrderBuilder().toInsert();
-        var client = new ClientBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).build(), new ProductBuilder().withId(2L).withCategory(Category.LANCHE).build());
         var productIds = List.of(1L, 2L);
 
-        when(clientGateway.findById(client.getId())).thenReturn(client);
         when(productGateway.findByIds(productIds)).thenReturn(products);
 
         try (MockedStatic<SecretUtils> utilities = Mockito.mockStatic(SecretUtils.class)) {
@@ -294,7 +259,6 @@ class DefaultOrderUseCaseTest {
             assertThrows(InvalidAttributeException.class, () -> useCase.insert(orderToInsert));
         }
 
-        verify(clientGateway, times(1)).findById(client.getId());
         verify(productGateway, times(1)).findByIds(productIds);
         verify(orderGateway, times(0)).save(any());
     }
@@ -302,11 +266,9 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrowNegativeOrZeroValueExceptionWhenOrderTotalIsInvalidToInsert() {
         var orderToInsert = new OrderBuilder().toInsert();
-        var client = new ClientBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).withValue(-10.0).build(), new ProductBuilder().withId(2L).withValue(-10.0).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
-        when(clientGateway.findById(client.getId())).thenReturn(client);
         when(productGateway.findByIds(productIds)).thenReturn(products);
 
         try (MockedStatic<SecretUtils> utilities = Mockito.mockStatic(SecretUtils.class)) {
@@ -314,7 +276,6 @@ class DefaultOrderUseCaseTest {
             assertThrows(NegativeOrZeroValueException.class, () -> useCase.insert(orderToInsert));
         }
 
-        verify(clientGateway, times(1)).findById(client.getId());
         verify(productGateway, times(1)).findByIds(productIds);
         verify(orderGateway, times(0)).save(any());
     }
@@ -442,11 +403,9 @@ class DefaultOrderUseCaseTest {
         var tokenWithoutClientId = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImlzcyI6IlRFU1QtSVNTVUVSIiwiY3BmIjoiMTY1NjU4MjQ3MzgiLCJpYXQiOjE2OTg2Mjg2NTksImp0aSI6Ijg5NjY2YTA2LTdkODgtNDBmNC1hYjBhLTI1ZTgyMGQ5N2FjNCJ9.LTAFfVwh0tNJtNLdBWHwvkUZIgbtO6x5UvPdwXEhz60";
         var orderToInsert = new OrderBuilder().withClientToken(tokenWithoutClientId).toInsert();
         var order = new OrderBuilder().withTotal(40.0).build();
-        var client = new ClientBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).withValue(30.0).build(), new ProductBuilder().withId(2L).withValue(10.0).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
-        when(clientGateway.findById(client.getId())).thenReturn(client);
         when(productGateway.findByIds(productIds)).thenReturn(products);
         when(orderGateway.save(orderToInsert)).thenReturn(order);
 
@@ -455,7 +414,6 @@ class DefaultOrderUseCaseTest {
             assertThrows(TokenJwtException.class, () -> useCase.insert(orderToInsert));
         }
 
-        verify(clientGateway, never()).findById(client.getId());
         verify(productGateway, never()).findByIds(productIds);
         verify(orderGateway, never()).save(orderToInsert);
     }

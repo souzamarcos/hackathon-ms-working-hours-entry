@@ -1,11 +1,9 @@
 package com.fiap.burger.gateway.order.model;
 
 import com.fiap.burger.entity.order.OrderItemAdditional;
-import com.fiap.burger.gateway.product.model.ProductJPA;
 import jakarta.persistence.*;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 @Table(name = "order_item_additional")
@@ -20,10 +18,6 @@ public class OrderItemAdditionalJPA {
     @Column(name = "order_item_id", insertable = false, updatable = false)
     Long orderItemId;
 
-    @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    ProductJPA product;
-
     @Column(name = "product_id")
     Long productId;
 
@@ -32,12 +26,12 @@ public class OrderItemAdditionalJPA {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderItemAdditionalJPA that = (OrderItemAdditionalJPA) o;
-        return Objects.equals(id, that.id) && Objects.equals(orderItem, that.orderItem) && Objects.equals(orderItemId, that.orderItemId) && Objects.equals(product, that.product) && Objects.equals(productId, that.productId);
+        return Objects.equals(id, that.id) && Objects.equals(orderItem, that.orderItem) && Objects.equals(orderItemId, that.orderItemId) && Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderItem, orderItemId, product, productId);
+        return Objects.hash(id, orderItem, orderItemId, productId);
     }
 
     public OrderItemAdditionalJPA(OrderItemJPA orderItem, Long productId) {
@@ -53,7 +47,7 @@ public class OrderItemAdditionalJPA {
         return new OrderItemAdditional(
             id,
             orderItemId,
-            Optional.ofNullable(product).map(ProductJPA::toEntity).orElse(null)
+            productId
         );
     }
 

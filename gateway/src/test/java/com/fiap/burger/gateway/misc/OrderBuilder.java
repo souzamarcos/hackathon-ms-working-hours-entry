@@ -1,16 +1,13 @@
 package com.fiap.burger.gateway.misc;
 
 import com.fiap.burger.entity.client.Client;
-import com.fiap.burger.entity.common.BaseEntity;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderItem;
 import com.fiap.burger.entity.order.OrderItemAdditional;
 import com.fiap.burger.entity.order.OrderStatus;
-import com.fiap.burger.entity.payment.Payment;
 import com.fiap.burger.entity.product.Category;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,8 +20,6 @@ public class OrderBuilder {
     private Client client = new ClientBuilder().build();
 
     private List<OrderItem> items = List.of(new OrderItem(1L, id, List.of(new OrderItemAdditional(2L, 1L, new ProductBuilder().withId(2L).withCategory(Category.ADICIONAL).build())), "Comentário", new ProductBuilder().withId(1L).build()));
-
-    private List<Payment> payments = Collections.emptyList();
 
     private Double total = 40.44;
 
@@ -67,7 +62,7 @@ public class OrderBuilder {
     }
 
     public Order build() {
-        return new Order(id, client, items, payments, total, status, createdAt, modifiedAt, deletedAt);
+        return new Order(id, client, items, total, status, createdAt, modifiedAt, deletedAt);
     }
 
     public Order toInsert() {

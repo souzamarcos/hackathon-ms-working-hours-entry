@@ -1,8 +1,17 @@
 package com.fiap.burger.gateway.order.model;
 
 import com.fiap.burger.entity.order.OrderItem;
-import com.fiap.burger.gateway.product.model.ProductJPA;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,10 +33,6 @@ public class OrderItemJPA {
     @Column(name = "order_id", insertable = false, updatable = false)
     Long orderId;
 
-    @JoinColumn(name = "product_id", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    ProductJPA product;
-
     @Column(name = "product_id")
     Long productId;
 
@@ -42,12 +47,12 @@ public class OrderItemJPA {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderItemJPA that = (OrderItemJPA) o;
-        return Objects.equals(id, that.id) && Objects.equals(order, that.order) && Objects.equals(orderId, that.orderId) && Objects.equals(product, that.product) && Objects.equals(productId, that.productId) && Objects.equals(comment, that.comment) && Objects.equals(orderItemAdditional, that.orderItemAdditional);
+        return Objects.equals(id, that.id) && Objects.equals(order, that.order) && Objects.equals(orderId, that.orderId) && Objects.equals(productId, that.productId) && Objects.equals(comment, that.comment) && Objects.equals(orderItemAdditional, that.orderItemAdditional);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, order, orderId, product, productId, comment, orderItemAdditional);
+        return Objects.hash(id, order, orderId, productId, comment, orderItemAdditional);
     }
 
     public OrderItemJPA() {
@@ -80,7 +85,7 @@ public class OrderItemJPA {
             orderId,
             Optional.ofNullable(orderItemAdditional).map(items -> items.stream().map(OrderItemAdditionalJPA::toEntity).toList()).orElse(null),
             comment,
-            Optional.ofNullable(product).map(ProductJPA::toEntity).orElse(null)
+            productId
         );
     }
 

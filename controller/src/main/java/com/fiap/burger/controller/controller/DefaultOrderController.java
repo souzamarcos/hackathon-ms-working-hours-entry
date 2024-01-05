@@ -3,7 +3,6 @@ package com.fiap.burger.controller.controller;
 import com.fiap.burger.controller.adapter.api.OrderController;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
-import com.fiap.burger.usecase.adapter.gateway.ClientGateway;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
 import com.fiap.burger.usecase.adapter.usecase.OrderUseCase;
@@ -20,8 +19,6 @@ public class DefaultOrderController implements OrderController {
     @Autowired
     OrderGateway orderGateway;
     @Autowired
-    ClientGateway clientGateway;
-    @Autowired
     ProductGateway productGateway;
 
     @Override
@@ -33,6 +30,8 @@ public class DefaultOrderController implements OrderController {
     public Order findById(Long orderId) {
         var persistedOrder = useCase.findById(orderId);
         if (persistedOrder == null) throw new OrderNotFoundException();
+        var products = productGateway.findByIds(persistedOrder.getProductIds());
+        persistedOrder.enrichItemsWithProducts(products);
         return persistedOrder;
     }
 
