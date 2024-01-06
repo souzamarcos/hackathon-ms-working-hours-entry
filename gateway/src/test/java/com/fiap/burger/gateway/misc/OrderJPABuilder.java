@@ -4,7 +4,6 @@ import com.fiap.burger.entity.client.Client;
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.gateway.order.model.OrderItemJPA;
 import com.fiap.burger.gateway.order.model.OrderJPA;
-import com.fiap.burger.gateway.payment.model.PaymentJPA;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -17,8 +16,6 @@ public class OrderJPABuilder {
     private Client client = new ClientBuilder().build();
 
     private List<OrderItemJPA> items = Collections.emptyList();
-
-    private List<PaymentJPA> payments = Collections.emptyList();
 
     private Double total = 40.44;
 
@@ -61,7 +58,7 @@ public class OrderJPABuilder {
     }
 
     public OrderJPA build() {
-        return new OrderJPA(id, client.getId(), items, payments, total, status, createdAt, modifiedAt, deletedAt);
+        return new OrderJPA(id, client.getId(), items, total, status, createdAt, modifiedAt, deletedAt);
     }
 
 }

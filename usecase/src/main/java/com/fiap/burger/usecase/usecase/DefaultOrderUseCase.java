@@ -3,11 +3,9 @@ package com.fiap.burger.usecase.usecase;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fiap.burger.entity.client.Client;
 import com.fiap.burger.entity.order.Order;
-import com.fiap.burger.entity.order.OrderItem;
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.entity.product.Category;
 import com.fiap.burger.entity.product.Product;
-import com.fiap.burger.usecase.adapter.gateway.ClientGateway;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
 import com.fiap.burger.usecase.adapter.usecase.OrderUseCase;
@@ -18,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DefaultOrderUseCase implements OrderUseCase {
 
@@ -26,12 +23,10 @@ public class DefaultOrderUseCase implements OrderUseCase {
     private static final String NEW_STATUS_FIELD = "newStatus";
     private final OrderGateway orderGateway;
     private final ProductGateway productGateway;
-    private final ClientGateway clientGateway;
 
-    public DefaultOrderUseCase(OrderGateway orderGateway, ProductGateway productGateway, ClientGateway clientGateway) {
+    public DefaultOrderUseCase(OrderGateway orderGateway, ProductGateway productGateway) {
         this.orderGateway = orderGateway;
         this.productGateway = productGateway;
-        this.clientGateway = clientGateway;
     }
 
     public Order findById(Long id) {
@@ -54,7 +49,7 @@ public class DefaultOrderUseCase implements OrderUseCase {
     public Order insert(Order order) {
         validateOrderToInsert(order);
         Client client = getClient(order);
-        List<Long> productIds = getProductIds(order);
+        List<Long> productIds = order.getProductIds();
         List<Product> products = productGateway.findByIds(productIds.stream().distinct().toList());
         validateProducts(order, products);
         var total = calculateTotal(productIds, products);
@@ -161,11 +156,7 @@ public class DefaultOrderUseCase implements OrderUseCase {
     private Client getClient(Order order) {
         if (!Optional.ofNullable(order.getClientToken()).isEmpty()) {
             Long clientId = extractIdFromToken(order.getClientToken());
-            Client client = clientGateway.findById(clientId);
-            if (client == null) {
-                throw new InvalidAttributeException("Client '" + order.getClientToken() + "' not found.", "clientId");
-            }
-            return client;
+            return new Client(clientId);
         }
         return null;
     }
@@ -195,9 +186,4 @@ public class DefaultOrderUseCase implements OrderUseCase {
         if (total <= 0) throw new NegativeOrZeroValueException("total");
     }
 
-    private List<Long> getProductIds(Order order) {
-        List<Long> productIds = order.getItems().stream().map(OrderItem::getProductId).collect(Collectors.toList());
-        productIds.addAll(order.getItems().stream().flatMap(item -> Optional.ofNullable(item.getAdditionalIds()).orElse(Collections.emptyList()).stream()).toList());
-        return productIds;
-    }
 }

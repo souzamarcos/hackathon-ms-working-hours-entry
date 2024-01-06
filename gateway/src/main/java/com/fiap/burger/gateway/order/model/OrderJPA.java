@@ -2,10 +2,9 @@ package com.fiap.burger.gateway.order.model;
 
 import com.fiap.burger.entity.client.Client;
 import com.fiap.burger.entity.order.Order;
+import com.fiap.burger.entity.order.OrderPaymentStatus;
 import com.fiap.burger.entity.order.OrderStatus;
-import com.fiap.burger.gateway.client.model.ClientJPA;
 import com.fiap.burger.gateway.misc.common.BaseDomainJPA;
-import com.fiap.burger.gateway.payment.model.PaymentJPA;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -18,20 +17,17 @@ import java.util.Optional;
 @Table(name = "`order`")
 public class OrderJPA extends BaseDomainJPA {
 
-    @JoinColumn(name = "client_id", insertable = false, updatable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    ClientJPA client;
-
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     List<OrderItemJPA> items;
 
-    @OneToMany(mappedBy = "orderJPA", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    List<PaymentJPA> payments;
     @Column
     Double total;
     @Enumerated(EnumType.ORDINAL)
     @Column
     OrderStatus status;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "payment_status")
+    OrderPaymentStatus paymentStatus;
 
     @Column(name = "client_id")
     Long clientId;
@@ -41,12 +37,12 @@ public class OrderJPA extends BaseDomainJPA {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderJPA orderJPA = (OrderJPA) o;
-        return Objects.equals(client, orderJPA.client) && Objects.equals(items, orderJPA.items) && Objects.equals(payments, orderJPA.payments) && Objects.equals(total, orderJPA.total) && status == orderJPA.status && Objects.equals(clientId, orderJPA.clientId);
+        return Objects.equals(items, orderJPA.items) && Objects.equals(total, orderJPA.total) && status == orderJPA.status && Objects.equals(clientId, orderJPA.clientId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(client, items, payments, total, status, clientId);
+        return Objects.hash(items, total, status, clientId);
     }
 
     public OrderJPA() {
@@ -56,7 +52,6 @@ public class OrderJPA extends BaseDomainJPA {
         Long id,
         Long clientId,
         List<OrderItemJPA> items,
-        List<PaymentJPA> payments,
         Double total,
         OrderStatus status,
         LocalDateTime createdAt,
@@ -68,7 +63,6 @@ public class OrderJPA extends BaseDomainJPA {
         this.clientId = clientId;
         this.total = total;
         this.items = items;
-        this.payments = payments;
         this.status = status;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
@@ -78,7 +72,8 @@ public class OrderJPA extends BaseDomainJPA {
     public Order toEntity() {
         return new Order(
             id,
-            Optional.ofNullable(client).map(ClientJPA::toEntity).orElse(null),
+            //TODO
+            null,
             total,
             status,
             createdAt,
@@ -90,22 +85,9 @@ public class OrderJPA extends BaseDomainJPA {
     public Order toEntityWithItems() {
         return new Order(
             id,
-            Optional.ofNullable(client).map(ClientJPA::toEntity).orElse(null),
+            //TODO
+            null,
             items.stream().map(OrderItemJPA::toEntityWithAdditional).toList(),
-            total,
-            status,
-            createdAt,
-            modifiedAt,
-            deletedAt
-        );
-    }
-
-    public Order toEntityWithItemsAndPayments() {
-        return new Order(
-            id,
-            Optional.ofNullable(client).map(ClientJPA::toEntity).orElse(null),
-            items.stream().map(OrderItemJPA::toEntityWithAdditional).toList(),
-            payments.stream().map(PaymentJPA::toEntity).toList(),
             total,
             status,
             createdAt,
@@ -118,7 +100,6 @@ public class OrderJPA extends BaseDomainJPA {
         OrderJPA newOrder = new OrderJPA(
             order.getId(),
             Optional.ofNullable(order.getClient()).map(Client::getId).orElse(null),
-            null,
             null,
             order.getTotal(),
             order.getStatus(),

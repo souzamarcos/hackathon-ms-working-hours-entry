@@ -48,6 +48,10 @@ public class Product extends BaseEntity {
         return value;
     }
 
+    public Product() {
+
+    }
+
     public Product(Category category, String name, String description, Double value) {
         this.category = category;
         this.name = name;

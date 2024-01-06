@@ -67,6 +67,10 @@ public class OrderItem {
         return orderItemAdditionals;
     }
 
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public OrderItem(Long orderId, Long productId, String comment) {
         this.orderId = orderId;
         this.productId = productId;
@@ -79,6 +83,14 @@ public class OrderItem {
         this.productId = productId;
         this.additionalIds = additionalIds;
         this.comment = comment;
+    }
+
+    public OrderItem(Long id, Long orderId, List<OrderItemAdditional> orderItemAdditionals, String comment, Long productId) {
+        this.id = id;
+        this.orderId = orderId;
+        this.orderItemAdditionals = orderItemAdditionals;
+        this.comment = comment;
+        this.productId = productId;
     }
 
     public OrderItem(Long id, Long orderId, List<OrderItemAdditional> orderItemAdditionals, String comment, Product product) {

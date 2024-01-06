@@ -6,6 +6,7 @@ dependencies {
     implementation(rootProject.libs.flyway.mysql)
     implementation(rootProject.libs.spring.boot.starter.data.jpa)
     implementation(rootProject.libs.hibernate.validator)
+    implementation(rootProject.libs.spring.boot.starter.web)
 
 
     implementation(rootProject.libs.aws.dynamodb.enhanced)
