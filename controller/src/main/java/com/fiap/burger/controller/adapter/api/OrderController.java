@@ -15,4 +15,6 @@ public interface OrderController {
     List<Order> findAllBy(OrderStatus status);
 
     List<Order> findAllInProgress();
+
+    Order checkout(Long orderId);
 }

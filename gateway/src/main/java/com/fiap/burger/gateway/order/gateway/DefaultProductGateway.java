@@ -3,6 +3,7 @@ package com.fiap.burger.gateway.order.gateway;
 import com.fiap.burger.entity.product.Product;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,8 @@ import java.util.stream.Collectors;
 
 @Repository
 public class DefaultProductGateway implements ProductGateway {
-    private static final String BASE_URL = "http://localhost:8080";
+    @Value("${api.product.host}")
+    private String apiProductHost;
 
     @Autowired
     RestTemplate restTemplate;
@@ -32,6 +34,6 @@ public class DefaultProductGateway implements ProductGateway {
     }
 
     private String buildFindByIdsUrl(List<Long> ids) {
-        return BASE_URL + "/products?id=" + ids.stream().map(Object::toString).collect(Collectors.joining(","));
+        return apiProductHost + "/products?id=" + ids.stream().map(Object::toString).collect(Collectors.joining(","));
     }
 }
