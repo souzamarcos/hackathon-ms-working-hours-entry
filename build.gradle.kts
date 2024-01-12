@@ -24,10 +24,19 @@ subprojects {
 	}
 
 	dependencies {
+		implementation(rootProject.libs.gson)
 		implementation("org.jacoco:org.jacoco.ant:0.8.10")
 
 		//Test
 		testImplementation(rootProject.libs.spring.boot.starter.test)
+		testImplementation(rootProject.libs.cucumber.java)
+		testImplementation(rootProject.libs.cucumber.junit)
+		testImplementation(rootProject.libs.cucumber.spring)
+		testImplementation(rootProject.libs.cucumber.junit.platform.engine)
+		testImplementation(rootProject.libs.h2)
+		testImplementation("org.junit.platform:junit-platform-suite:1.9.3")
+		testImplementation("io.rest-assured:rest-assured:5.3.0")
+		testImplementation("io.rest-assured:json-schema-validator:5.3.1")
 	}
 
 	tasks.withType<Test> {

@@ -3,6 +3,7 @@ package com.fiap.burger.controller.controller;
 import com.fiap.burger.controller.adapter.api.OrderController;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
+import com.fiap.burger.messenger.adapter.OrderMessenger;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
 import com.fiap.burger.usecase.adapter.usecase.OrderUseCase;
@@ -20,10 +21,14 @@ public class DefaultOrderController implements OrderController {
     OrderGateway orderGateway;
     @Autowired
     ProductGateway productGateway;
+    @Autowired
+    OrderMessenger orderMessenger;
 
     @Override
     public Order insert(Order order) {
-        return useCase.insert(order);
+        var persistedOrder = useCase.insert(order);
+        orderMessenger.sendMessage(persistedOrder);
+        return persistedOrder;
     }
 
     @Override
@@ -48,6 +53,11 @@ public class DefaultOrderController implements OrderController {
     @Override
     public List<Order> findAllInProgress() {
         return useCase.findAllInProgress();
+    }
+
+    @Override
+    public Order checkout(Long orderId) {
+        return useCase.checkout(orderId);
     }
 }
 

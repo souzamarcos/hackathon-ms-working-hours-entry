@@ -41,6 +41,19 @@ public class Order extends BaseEntity {
         );
     }
 
+    @Override
+    public String toString() {
+        return "{" +
+            "clientToken='" + clientToken + '\'' +
+            ", client=" + client +
+            ", items=" + items +
+            ", total=" + total +
+            ", status=" + status +
+            ", paymentStatus=" + paymentStatus +
+            ", id=" + id +
+            '}';
+    }
+
     public String getClientToken() {
         return clientToken;
     }
