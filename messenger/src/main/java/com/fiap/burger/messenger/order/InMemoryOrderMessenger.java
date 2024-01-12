@@ -11,6 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class InMemoryOrderMessenger implements OrderMessenger {
     public void sendMessage(Order order) {
-        System.out.println("alo, alo");
+        System.out.println("Order " + order.getId() + " was sent through messenger");
     }
 }
