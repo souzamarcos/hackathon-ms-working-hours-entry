@@ -20,5 +20,7 @@ dependencies {
     implementation(project(":listener"))
 
     implementation(rootProject.libs.spring.boot.starter.web)
-
+    implementation(rootProject.libs.spring.messaging)
+    implementation(rootProject.libs.spring.cloud.starter.aws)
+    implementation(rootProject.libs.spring.cloud.starter.aws.messaging)
 }
