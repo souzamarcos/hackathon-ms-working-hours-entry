@@ -4,7 +4,7 @@ import com.fiap.burger.api.dto.order.response.ListOrderResponseDto;
 import com.fiap.burger.application.utils.OrderHelper;
 import com.fiap.burger.entity.order.OrderPaymentStatus;
 import com.fiap.burger.entity.order.OrderStatus;
-import com.fiap.burger.listener.payment.PaymentMessageListener;
+import com.fiap.burger.listener.payment.InMemoryPaymentMessageListener;
 import com.fiap.burger.listener.payment.PaymentMessageListenerDto;
 import com.google.gson.Gson;
 import io.cucumber.java.pt.Dado;
@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.hasItem;
 public class StepDefinition extends CucumberIntegrationTest {
 
     @Autowired
-    PaymentMessageListener paymentMessageListener;
+    InMemoryPaymentMessageListener paymentMessageListener;
 
     private Response response;
     private ListOrderResponseDto listOrderResponse;

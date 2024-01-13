@@ -7,10 +7,12 @@ import com.fiap.burger.usecase.misc.exception.PaymentMessageListenerException;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+@Profile("prod")
 @Component
-public class PaymentMessageListener {
+public class DefaultPaymentMessageListener {
     @Autowired
     OrderController orderController;
 
