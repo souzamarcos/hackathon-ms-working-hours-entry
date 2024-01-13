@@ -150,7 +150,7 @@ public class DefaultOrderUseCase implements OrderUseCase {
     }
 
     private Double calculateTotal(List<Long> productIds, List<Product> products) {
-        return productIds.stream().mapToDouble(id -> products.stream().filter(product -> product.getId().equals(id)).findFirst().map(Product::getValue).orElse(0.0)).sum();
+        return productIds.stream().mapToDouble(id -> products.stream().filter(product -> product.getId().equals(id)).findFirst().map(Product::getPrice).orElse(0.0)).sum();
     }
 
     private Client getClient(Order order) {

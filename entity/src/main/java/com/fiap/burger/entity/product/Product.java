@@ -9,7 +9,7 @@ public class Product extends BaseEntity {
     private Category category;
     private String name;
     private String description;
-    private Double value;
+    private Double price;
 
     @Override
     public boolean equals(Object o) {
@@ -25,7 +25,7 @@ public class Product extends BaseEntity {
             getCategory(),
             getName(),
             getDescription(),
-            getValue(),
+            getPrice(),
             getCreatedAt(),
             getModifiedAt(),
             getDeletedAt()
@@ -44,27 +44,27 @@ public class Product extends BaseEntity {
         return description;
     }
 
-    public Double getValue() {
-        return value;
+    public Double getPrice() {
+        return price;
     }
 
     public Product() {
 
     }
 
-    public Product(Category category, String name, String description, Double value) {
+    public Product(Category category, String name, String description, Double price) {
         this.category = category;
         this.name = name;
         this.description = description;
-        this.value = value;
+        this.price = price;
     }
 
-    public Product(Long id, Category category, String name, String description, Double value) {
+    public Product(Long id, Category category, String name, String description, Double price) {
         this.id = id;
         this.category = category;
         this.name = name;
         this.description = description;
-        this.value = value;
+        this.price = price;
     }
 
     public Product(
@@ -72,7 +72,7 @@ public class Product extends BaseEntity {
         Category category,
         String name,
         String description,
-        Double value,
+        Double price,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
         LocalDateTime deletedAt
@@ -81,7 +81,7 @@ public class Product extends BaseEntity {
         this.category = category;
         this.name = name;
         this.description = description;
-        this.value = value;
+        this.price = price;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.deletedAt = deletedAt;
