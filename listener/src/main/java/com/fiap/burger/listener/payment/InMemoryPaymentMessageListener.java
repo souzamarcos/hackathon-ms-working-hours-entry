@@ -7,7 +7,6 @@ import com.fiap.burger.usecase.misc.exception.PaymentMessageListenerException;
 import com.fiap.burger.usecase.misc.profiles.Test;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Test
