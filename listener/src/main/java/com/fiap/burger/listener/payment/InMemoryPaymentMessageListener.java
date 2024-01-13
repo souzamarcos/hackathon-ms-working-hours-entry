@@ -4,12 +4,13 @@ import com.fiap.burger.controller.adapter.api.OrderController;
 import com.fiap.burger.entity.order.OrderPaymentStatus;
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.usecase.misc.exception.PaymentMessageListenerException;
+import com.fiap.burger.usecase.misc.profiles.Test;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-@Profile("test")
+@Test
 @Component
 public class InMemoryPaymentMessageListener {
     @Autowired
