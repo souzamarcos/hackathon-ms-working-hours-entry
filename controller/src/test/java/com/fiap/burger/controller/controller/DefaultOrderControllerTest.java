@@ -3,6 +3,7 @@ package com.fiap.burger.controller.controller;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.gateway.order.gateway.DefaultProductGateway;
+import com.fiap.burger.messenger.order.DefaultOrderMessenger;
 import com.fiap.burger.usecase.misc.exception.OrderNotFoundException;
 import com.fiap.burger.usecase.usecase.DefaultOrderUseCase;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +23,9 @@ class DefaultOrderControllerTest {
 
     @Mock
     DefaultOrderUseCase useCase;
+
+    @Mock
+    DefaultOrderMessenger messenger;
 
     @Mock
     DefaultProductGateway productGateway;
