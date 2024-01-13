@@ -5,7 +5,7 @@ on:
       - main
 env:
   AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: burger-application           # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: ms-order           # set this to your Amazon ECR repository name
 
 jobs:
   build:
@@ -98,4 +98,4 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          kubectl rollout restart deploy app-burger-deployment
+          kubectl rollout restart deploy ms-order-deployment
