@@ -8,7 +8,6 @@ import com.fiap.burger.usecase.misc.profiles.Production;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Production
