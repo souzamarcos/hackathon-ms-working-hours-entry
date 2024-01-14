@@ -63,6 +63,20 @@ class DefaultOrderGatewayTest {
     }
 
     @Test
+    void shouldFindAllBy() {
+        var ordersJPA = List.of(new OrderJPABuilder().withId(1L).withStatus(OrderStatus.RECEBIDO).build());
+        var expected = ordersJPA.stream().map(OrderJPA::toEntity).collect(Collectors.toList());
+
+        when(orderDAO.findAllByDeletedAtNullAndStatusEquals(OrderStatus.RECEBIDO)).thenReturn(ordersJPA);
+
+        var actual = gateway.findAllBy(OrderStatus.RECEBIDO);
+
+        assertEquals(expected, actual);
+
+        verify(orderDAO, times(1)).findAllByDeletedAtNullAndStatusEquals(OrderStatus.RECEBIDO);
+    }
+
+    @Test
     void shouldFindAllInProgress() {
         var ordersJPA = List.of(new OrderJPABuilder().withId(1L).build());
         var expected = ordersJPA.stream().map(OrderJPA::toEntity).collect(Collectors.toList());
