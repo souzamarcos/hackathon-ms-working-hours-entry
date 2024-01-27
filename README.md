@@ -2,7 +2,10 @@
 Projeto da pós graduação da FIAP de Arquitetura de Software
 
 # Repositórios relacionados
-* [Aplicação](https://github.com/souzamarcos/tech-challenge-fast-food)
+* [Serviço de produto](https://github.com/souzamarcos/tech-challenge-ms-product)
+* [Serviço de pedidos](https://github.com/souzamarcos/tech-challenge-ms-order)
+* [Serviço de pagamento](https://github.com/souzamarcos/tech-challenge-ms-payment)
+* [Serviço de cliente](https://github.com/souzamarcos/tech-challenge-ms-customer)
 * [Infraestrutura Terraform](https://github.com/souzamarcos/tech-challenge-terraform)
 * [Configuração do Kubernetes](https://github.com/souzamarcos/tech-challenge-kubernetes)
 * [Lambda de Autenticação](https://github.com/souzamarcos/tech-challenge-authentication-lambda)
