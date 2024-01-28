@@ -26,4 +26,10 @@ public class OrderHelper {
         return new PaymentMessageListenerDto(genericPaymentId, orderId, paymentStatus);
     }
 
+    public static OrderInsertRequestDto createOrderWithCustomerRequest() {
+        var item = new OrderItemInsertRequestDto(2L, Arrays.asList(20L), "Comentário");
+
+        return new OrderInsertRequestDto("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImlzcyI6IlRFU1QtSVNTVUVSIiwiY3VzdG9tZXJJZCI6IjEiLCJjcGYiOiIxMjM0NTY3ODkwMSIsImlhdCI6MTcwNjQxMzQzMiwianRpIjoiZjA0MjNlNGMtN2MxMC00YjM1LThkOTUtZGJmYWZjM2NmZGE0In0.ofm4-HItY30TdyIzbqGgo-KXZf-OIlwhQckryBt52S8", Arrays.asList(item));
+    }
+
 }

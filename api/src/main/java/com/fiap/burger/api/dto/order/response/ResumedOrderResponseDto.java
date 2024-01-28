@@ -7,13 +7,13 @@ import jakarta.validation.constraints.Null;
 
 import java.time.LocalDateTime;
 
-public record ListOrderResponseDto(
+public record ResumedOrderResponseDto(
 
     @NotNull
     Long id,
 
     @Null
-    OrderClientResponseDto client,
+    OrderCustomerResponseDto customer,
 
     @NotNull
     Double total,
@@ -24,10 +24,10 @@ public record ListOrderResponseDto(
     LocalDateTime modifiedAt
 ) {
 
-    public static ListOrderResponseDto toResponseDto(Order order) {
-        return new ListOrderResponseDto(
+    public static ResumedOrderResponseDto toResponseDto(Order order) {
+        return new ResumedOrderResponseDto(
             order.getId(),
-            OrderClientResponseDto.toResponseDto(order.getClient()),
+            OrderCustomerResponseDto.toResponseDto(order.getCustomer()),
             order.getTotal(),
             order.getStatus(),
             order.getModifiedAt()

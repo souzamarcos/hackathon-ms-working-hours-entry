@@ -5,7 +5,6 @@ import com.fiap.burger.api.dto.order.request.OrderItemInsertRequestDto;
 import com.fiap.burger.api.dto.order.request.OrderUpdateStatusRequestDto;
 import com.fiap.burger.api.dto.order.response.*;
 import com.fiap.burger.controller.adapter.api.OrderController;
-import com.fiap.burger.entity.client.Client;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderItem;
 import com.fiap.burger.entity.order.OrderItemAdditional;
@@ -18,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,11 +35,11 @@ class OrderApiTest {
     void shouldInsertOrder() {
         var request = new OrderInsertRequestDto(null, List.of(new OrderItemInsertRequestDto(1L, List.of(2L), "Comentário")));
         var order = getMockOrder();
-        var expected = new ListOrderResponseDto(1L, null, 30.0, OrderStatus.AGUARDANDO_PAGAMENTO, null);
+        var expected = new ResumedOrderResponseDto(1L, null, 30.0, OrderStatus.AGUARDANDO_PAGAMENTO, null);
 
         when(controller.insert(request.toEntity())).thenReturn(order);
 
-        ListOrderResponseDto actual = api.insert(request);
+        ResumedOrderResponseDto actual = api.insert(request);
 
         assertEquals(expected, actual);
 
@@ -68,11 +66,11 @@ class OrderApiTest {
         var order = getMockOrder();
         order.setStatus(OrderStatus.RECEBIDO);
 
-        var expected = new ListOrderResponseDto(1L, null, 30.0, OrderStatus.RECEBIDO, null);
+        var expected = new ResumedOrderResponseDto(1L, null, 30.0, OrderStatus.RECEBIDO, null);
 
         when(controller.updateStatus(1L, OrderStatus.RECEBIDO)).thenReturn(order);
 
-        ListOrderResponseDto actual = api.updateStatus(1L, new OrderUpdateStatusRequestDto(OrderStatus.RECEBIDO));
+        ResumedOrderResponseDto actual = api.updateStatus(1L, new OrderUpdateStatusRequestDto(OrderStatus.RECEBIDO));
 
         assertEquals(expected, actual);
 
@@ -83,11 +81,11 @@ class OrderApiTest {
     void shouldFindAllBy() {
         var id = 1L;
         var order = getMockOrder();
-        var expected = List.of(new ListOrderResponseDto(id, null, 30.0, OrderStatus.AGUARDANDO_PAGAMENTO, null));
+        var expected = List.of(new ResumedOrderResponseDto(id, null, 30.0, OrderStatus.AGUARDANDO_PAGAMENTO, null));
 
         when(controller.findAllBy(OrderStatus.AGUARDANDO_PAGAMENTO)).thenReturn(List.of(order));
 
-        List<ListOrderResponseDto> actual = api.findAll(OrderStatus.AGUARDANDO_PAGAMENTO);
+        List<ResumedOrderResponseDto> actual = api.findAll(OrderStatus.AGUARDANDO_PAGAMENTO);
 
         assertEquals(expected, actual);
 
@@ -99,11 +97,11 @@ class OrderApiTest {
         var id = 1L;
         var order = getMockOrder();
         order.setStatus(OrderStatus.RECEBIDO);
-        var expected = List.of(new ListOrderResponseDto(id, null, 30.0, OrderStatus.RECEBIDO, null));
+        var expected = List.of(new ResumedOrderResponseDto(id, null, 30.0, OrderStatus.RECEBIDO, null));
 
         when(controller.findAllInProgress()).thenReturn(List.of(order));
 
-        List<ListOrderResponseDto> actual = api.findAllInProgress();
+        List<ResumedOrderResponseDto> actual = api.findAllInProgress();
 
         assertEquals(expected, actual);
 

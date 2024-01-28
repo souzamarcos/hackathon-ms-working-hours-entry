@@ -1,6 +1,6 @@
 CREATE TABLE `order`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `client_id` BIGINT NULL,
+    `customer_id` VARCHAR(255) NULL,
     `status` BIGINT NOT NULL,
     `total` DOUBLE NOT NULL,
     `payment_status` BIGINT,

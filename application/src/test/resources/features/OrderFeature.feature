@@ -29,3 +29,7 @@ Funcionalidade: API - Pedidos
     Quando realizar o checkout do pedido
     E requisitar a busca de pedidos com status recebido
     Entao pedido deve estar entre os pedidos retornados
+
+  Cenario: Registrar um novo pedido especificando cliente
+    Quando submeter um novo pedido especificando cliente
+    Entao o pedido especificando cliente é registrado com sucesso

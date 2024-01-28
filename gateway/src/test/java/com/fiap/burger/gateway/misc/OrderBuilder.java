@@ -1,6 +1,6 @@
 package com.fiap.burger.gateway.misc;
 
-import com.fiap.burger.entity.client.Client;
+import com.fiap.burger.entity.customer.Customer;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderItem;
 import com.fiap.burger.entity.order.OrderItemAdditional;
@@ -13,11 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OrderBuilder {
-    private static final String CLIENT_TOKEN_ID_1L = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImNsaWVudElkIjoxLCJpc3MiOiJQb3MtVGVjaCBGSUFQIC0gQnVyZ2VyIiwiY3BmIjoiMTY1NjU4MjQ3MzgiLCJpYXQiOjE2OTg2MDI2NzEsImp0aSI6ImE5MTYzZTBjLWM1NzgtNDYxNC04ZWZjLTYwMzNiNTg0Y2FlOCJ9.kX5zh2vyqsYuyqz1Yf-lJtYnDt9jRVyMuls3qC-hBD8";
-
+    private static final String CUSTOMER_TOKEN_ID_1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImlzcyI6IlRFU1QtSVNTVUVSIiwiY3VzdG9tZXJJZCI6IjEiLCJjcGYiOiIxMjM0NTY3ODkwMSIsImlhdCI6MTcwNjQxMzQzMiwianRpIjoiZjA0MjNlNGMtN2MxMC00YjM1LThkOTUtZGJmYWZjM2NmZGE0In0.ofm4-HItY30TdyIzbqGgo-KXZf-OIlwhQckryBt52S8";
     private Long id = 1L;
 
-    private Client client = new ClientBuilder().build();
+    private Customer customer = new CustomerBuilder().build();
 
     private List<OrderItem> items = List.of(new OrderItem(1L, id, List.of(new OrderItemAdditional(2L, 1L, new ProductBuilder().withId(2L).withCategory(Category.ADICIONAL).build())), "Comentário", new ProductBuilder().withId(1L).build()));
 
@@ -36,8 +35,8 @@ public class OrderBuilder {
         return this;
     }
 
-    public OrderBuilder withClient(Client client) {
-        this.client = client;
+    public OrderBuilder withClient(Customer customer) {
+        this.customer = customer;
         return this;
     }
 
@@ -62,12 +61,12 @@ public class OrderBuilder {
     }
 
     public Order build() {
-        return new Order(id, client, items, total, status, createdAt, modifiedAt, deletedAt);
+        return new Order(id, customer, items, total, status, createdAt, modifiedAt, deletedAt);
     }
 
     public Order toInsert() {
         return new Order(
-            Optional.ofNullable(client).map((Client client) -> CLIENT_TOKEN_ID_1L).orElse(null),
+            Optional.ofNullable(customer).map((Customer customer) -> CUSTOMER_TOKEN_ID_1).orElse(null),
             Optional.ofNullable(items).map(this::toInsertOrderItems).orElse(null),
             status);
     }

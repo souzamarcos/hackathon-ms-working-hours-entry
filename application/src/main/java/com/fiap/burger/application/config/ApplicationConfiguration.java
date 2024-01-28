@@ -3,6 +3,7 @@ package com.fiap.burger.application.config;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
 import com.fiap.burger.usecase.adapter.usecase.OrderUseCase;
+import com.fiap.burger.usecase.misc.token.TokenJwtUtils;
 import com.fiap.burger.usecase.usecase.DefaultOrderUseCase;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +15,9 @@ import java.time.Duration;
 @Configuration
 public class ApplicationConfiguration {
     @Bean
-    public OrderUseCase orderUseCase(OrderGateway orderGateway, ProductGateway productGateway) {
-        return new DefaultOrderUseCase(orderGateway, productGateway);
+    public OrderUseCase orderUseCase(OrderGateway orderGateway, ProductGateway productGateway,
+                                     TokenJwtUtils tokenJwtUtils) {
+        return new DefaultOrderUseCase(orderGateway, productGateway, tokenJwtUtils);
     }
 
     @Bean

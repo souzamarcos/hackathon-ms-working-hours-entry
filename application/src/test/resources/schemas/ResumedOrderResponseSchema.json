@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "customer": {
+      "type": "null"
+    },
+    "total": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string"
+    },
+    "modifiedAt": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "total",
+    "status",
+    "modifiedAt"
+  ]
+}
