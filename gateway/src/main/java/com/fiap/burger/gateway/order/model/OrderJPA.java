@@ -1,6 +1,6 @@
 package com.fiap.burger.gateway.order.model;
 
-import com.fiap.burger.entity.client.Client;
+import com.fiap.burger.entity.customer.Customer;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderPaymentStatus;
 import com.fiap.burger.entity.order.OrderStatus;
@@ -28,21 +28,20 @@ public class OrderJPA extends BaseDomainJPA {
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "payment_status")
     OrderPaymentStatus paymentStatus;
-
-    @Column(name = "client_id")
-    Long clientId;
+    @Column(name = "customer_id")
+    String customerId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderJPA orderJPA = (OrderJPA) o;
-        return Objects.equals(items, orderJPA.items) && Objects.equals(total, orderJPA.total) && status == orderJPA.status && Objects.equals(clientId, orderJPA.clientId);
+        return Objects.equals(items, orderJPA.items) && Objects.equals(total, orderJPA.total) && status == orderJPA.status && Objects.equals(customerId, orderJPA.customerId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(items, total, status, clientId);
+        return Objects.hash(items, total, status, customerId);
     }
 
     public OrderJPA() {
@@ -50,17 +49,16 @@ public class OrderJPA extends BaseDomainJPA {
 
     public OrderJPA(
         Long id,
-        Long clientId,
+        String customerId,
         List<OrderItemJPA> items,
         Double total,
         OrderStatus status,
         LocalDateTime createdAt,
         LocalDateTime modifiedAt,
         LocalDateTime deletedAt
-
     ) {
         this.id = id;
-        this.clientId = clientId;
+        this.customerId = customerId;
         this.total = total;
         this.items = items;
         this.status = status;
@@ -72,7 +70,6 @@ public class OrderJPA extends BaseDomainJPA {
     public Order toEntity() {
         return new Order(
             id,
-            //TODO
             null,
             total,
             status,
@@ -85,7 +82,6 @@ public class OrderJPA extends BaseDomainJPA {
     public Order toEntityWithItems() {
         return new Order(
             id,
-            //TODO
             null,
             items.stream().map(OrderItemJPA::toEntityWithAdditional).toList(),
             total,
@@ -99,7 +95,7 @@ public class OrderJPA extends BaseDomainJPA {
     public static OrderJPA toJPA(Order order) {
         OrderJPA newOrder = new OrderJPA(
             order.getId(),
-            Optional.ofNullable(order.getClient()).map(Client::getId).orElse(null),
+            Optional.ofNullable(order.getCustomer()).map(Customer::getId).orElse(null),
             null,
             order.getTotal(),
             order.getStatus(),

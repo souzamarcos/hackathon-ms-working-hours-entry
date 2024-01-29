@@ -1,7 +1,7 @@
 package com.fiap.burger.usecase.usecase;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fiap.burger.entity.client.Client;
+import com.fiap.burger.entity.customer.Customer;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.entity.product.Category;
@@ -23,10 +23,13 @@ public class DefaultOrderUseCase implements OrderUseCase {
     private static final String NEW_STATUS_FIELD = "newStatus";
     private final OrderGateway orderGateway;
     private final ProductGateway productGateway;
+    private final TokenJwtUtils tokenJwtUtils;
 
-    public DefaultOrderUseCase(OrderGateway orderGateway, ProductGateway productGateway) {
+    public DefaultOrderUseCase(OrderGateway orderGateway, ProductGateway productGateway,
+                               TokenJwtUtils tokenJwtUtils) {
         this.orderGateway = orderGateway;
         this.productGateway = productGateway;
+        this.tokenJwtUtils = tokenJwtUtils;
     }
 
     public Order findById(Long id) {
@@ -48,7 +51,7 @@ public class DefaultOrderUseCase implements OrderUseCase {
 
     public Order insert(Order order) {
         validateOrderToInsert(order);
-        Client client = getClient(order);
+        Customer customer = getCustomer(order);
         List<Long> productIds = order.getProductIds();
         List<Product> products = productGateway.findByIds(productIds.stream().distinct().toList());
         validateProducts(order, products);
@@ -56,7 +59,7 @@ public class DefaultOrderUseCase implements OrderUseCase {
         validateTotal(total);
         order.setTotal(total);
         var persistedOrder = orderGateway.save(order);
-        persistedOrder.setClient(client);
+        persistedOrder.setCustomer(customer);
         return persistedOrder;
     }
 
@@ -153,17 +156,17 @@ public class DefaultOrderUseCase implements OrderUseCase {
         return productIds.stream().mapToDouble(id -> products.stream().filter(product -> product.getId().equals(id)).findFirst().map(Product::getPrice).orElse(0.0)).sum();
     }
 
-    private Client getClient(Order order) {
-        if (!Optional.ofNullable(order.getClientToken()).isEmpty()) {
-            Long clientId = extractIdFromToken(order.getClientToken());
-            return new Client(clientId);
+    private Customer getCustomer(Order order) {
+        if (Optional.ofNullable(order.getCustomerToken()).isPresent()) {
+            String customerId = extractIdFromToken(order.getCustomerToken());
+            return new Customer(customerId);
         }
         return null;
     }
 
-    protected Long extractIdFromToken(String token) {
-        DecodedJWT decodedJwt = TokenJwtUtils.readToken(token);
-        return Optional.ofNullable(decodedJwt.getClaim("clientId").asLong()).orElseThrow(() -> new TokenJwtException("Malformed token."));
+    protected String extractIdFromToken(String token) {
+        DecodedJWT decodedJwt = tokenJwtUtils.readToken(token);
+        return Optional.ofNullable(decodedJwt.getClaim("customerId").asString()).orElseThrow(() -> new TokenJwtException("Malformed token."));
     }
 
     private void validateOrderToInsert(Order order) {

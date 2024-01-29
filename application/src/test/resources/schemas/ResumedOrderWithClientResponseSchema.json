@@ -5,8 +5,8 @@
     "id": {
       "type": "integer"
     },
-    "client": {
-      "type": "null"
+    "customer": {
+      "type": "object"
     },
     "total": {
       "type": "number"

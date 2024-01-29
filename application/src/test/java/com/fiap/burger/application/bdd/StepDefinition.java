@@ -1,6 +1,6 @@
 package com.fiap.burger.application.bdd;
 
-import com.fiap.burger.api.dto.order.response.ListOrderResponseDto;
+import com.fiap.burger.api.dto.order.response.ResumedOrderResponseDto;
 import com.fiap.burger.application.utils.OrderHelper;
 import com.fiap.burger.entity.order.OrderPaymentStatus;
 import com.fiap.burger.entity.order.OrderStatus;
@@ -28,24 +28,24 @@ public class StepDefinition extends CucumberIntegrationTest {
     InMemoryPaymentMessageListener paymentMessageListener;
 
     private Response response;
-    private ListOrderResponseDto listOrderResponse;
+    private ResumedOrderResponseDto listOrderResponse;
 
     private String getEndpoint() { return "http://localhost:" + port + "/orders"; }
 
     @Quando("submeter um novo pedido")
-    public ListOrderResponseDto submeterUmNovoPedido() {
+    public ResumedOrderResponseDto submeterUmNovoPedido() {
         var orderRequest = OrderHelper.createOrderRequest();
         response = given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(orderRequest)
             .when().post(getEndpoint());
-        return response.then().extract().as(ListOrderResponseDto.class);
+        return response.then().extract().as(ResumedOrderResponseDto.class);
     }
     @Entao("o pedido é registrado com sucesso")
     public void pedidoRegistradoComSucesso() {
         response.then()
             .statusCode(HttpStatus.OK.value())
-            .body(matchesJsonSchemaInClasspath("./schemas/ListOrderResponseSchema.json"));
+            .body(matchesJsonSchemaInClasspath("schemas/ResumedOrderResponseSchema.json"));
     }
 
     @Dado("que um pedido já foi registrado")
@@ -100,7 +100,7 @@ public class StepDefinition extends CucumberIntegrationTest {
     public void pedidoDeveEstarGravadoComStatusFinalizado() {
         response.then()
             .statusCode(HttpStatus.OK.value())
-            .body(matchesJsonSchemaInClasspath("./schemas/ListOrderResponseSchema.json"))
+            .body(matchesJsonSchemaInClasspath("schemas/ResumedOrderResponseSchema.json"))
             .body("id", equalTo(listOrderResponse.id().intValue()))
             .body("status", equalTo("FINALIZADO"));
     }
@@ -115,7 +115,7 @@ public class StepDefinition extends CucumberIntegrationTest {
     public void pedidoDeveEstarEntreOsPedidosRetornados() {
         response.then()
             .statusCode(HttpStatus.OK.value())
-            .body(matchesJsonSchemaInClasspath("./schemas/ListListOrderResponseSchema.json"))
+            .body(matchesJsonSchemaInClasspath("schemas/ListResumedOrderResponseSchema.json"))
             .body("", hasItem(anyOf(hasEntry("id", listOrderResponse.id().intValue()))));
     }
 
@@ -125,5 +125,21 @@ public class StepDefinition extends CucumberIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .get(getEndpoint() + "?status=RECEBIDO");
+    }
+    @Quando("submeter um novo pedido especificando cliente")
+    public ResumedOrderResponseDto submeterUmNovoPedidoEspecificandoCliente() {
+        var orderRequest = OrderHelper.createOrderWithCustomerRequest();
+        response = given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(orderRequest)
+            .when().post(getEndpoint());
+        return response.then().extract().as(ResumedOrderResponseDto.class);
+    }
+
+    @Entao("o pedido especificando cliente é registrado com sucesso")
+    public void pedidoEspecificandoClienteRegistradoComSucesso() {
+        response.then()
+            .statusCode(HttpStatus.OK.value())
+            .body(matchesJsonSchemaInClasspath("schemas/ResumedOrderWithClientResponseSchema.json"));
     }
 }

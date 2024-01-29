@@ -13,7 +13,7 @@ public record OrderResponseDto(
     Long id,
 
     @Null
-    OrderClientResponseDto client,
+    OrderCustomerResponseDto customer,
 
     @NotNull
     List<OrderItemResponseDto> items,
@@ -28,7 +28,7 @@ public record OrderResponseDto(
     public static OrderResponseDto toResponseDto(Order order) {
         return new OrderResponseDto(
             order.getId(),
-            OrderClientResponseDto.toResponseDto(order.getClient()),
+            OrderCustomerResponseDto.toResponseDto(order.getCustomer()),
             order.getItems().stream().map(OrderItemResponseDto::toResponseDto).toList(),
             order.getTotal(),
             order.getStatus()

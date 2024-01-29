@@ -1,6 +1,6 @@
 package com.fiap.burger.usecase.misc;
 
-import com.fiap.burger.entity.client.Client;
+import com.fiap.burger.entity.customer.Customer;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderItem;
 import com.fiap.burger.entity.order.OrderItemAdditional;
@@ -8,18 +8,17 @@ import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.entity.product.Category;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OrderBuilder {
     //chave gerada com secret "TEST-SECRET" e issuer "TEST-ISSUER" sem expiração
-    public static final String CLIENT_TOKEN_ID_1L = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImNsaWVudElkIjoxLCJpc3MiOiJURVNULUlTU1VFUiIsImNwZiI6IjE2NTY1ODI0NzM4IiwiaWF0IjoxNjk4NjI1OTYxLCJqdGkiOiJhNzIyYTBiNC1lY2M5LTQ2ZDQtOTRhYy00Mzg1NzI1YTAxOTcifQ.CuXTgz2VE-5ThjQRHMQtZ3iZE5zz3JV0vji5urdqrPI";
+    private static final String CUSTOMER_TOKEN_ID_1 = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImlzcyI6IlRFU1QtSVNTVUVSIiwiY3VzdG9tZXJJZCI6IjEiLCJjcGYiOiIxMjM0NTY3ODkwMSIsImlhdCI6MTcwNjQxMzQzMiwianRpIjoiZjA0MjNlNGMtN2MxMC00YjM1LThkOTUtZGJmYWZjM2NmZGE0In0.ofm4-HItY30TdyIzbqGgo-KXZf-OIlwhQckryBt52S8";
 
     private Long id = 1L;
 
-    private Client client = new ClientBuilder().build();
+    private Customer customer = new CustomerBuilder().build();
 
     private List<OrderItem> items = List.of(new OrderItem(1L, id, List.of(new OrderItemAdditional(2L, 1L, new ProductBuilder().withId(2L).withCategory(Category.ADICIONAL).build())), "Comentário", new ProductBuilder().withId(1L).build()));
 
@@ -33,15 +32,15 @@ public class OrderBuilder {
 
     private LocalDateTime deletedAt = null;
 
-    private String clientToken = CLIENT_TOKEN_ID_1L;
+    private String customerToken = CUSTOMER_TOKEN_ID_1;
 
     public OrderBuilder withId(Long id) {
         this.id = id;
         return this;
     }
 
-    public OrderBuilder withClient(Client client) {
-        this.client = client;
+    public OrderBuilder withCustomer(Customer customer) {
+        this.customer = customer;
         return this;
     }
 
@@ -65,18 +64,18 @@ public class OrderBuilder {
         return this;
     }
 
-    public OrderBuilder withClientToken(String clientToken) {
-        this.clientToken = clientToken;
+    public OrderBuilder withCustomerToken(String customerToken) {
+        this.customerToken = customerToken;
         return this;
     }
 
     public Order build() {
-        return new Order(id, client, items, total, status, createdAt, modifiedAt, deletedAt);
+        return new Order(id, customer, items, total, status, createdAt, modifiedAt, deletedAt);
     }
 
     public Order toInsert() {
         return new Order(
-            Optional.ofNullable(client).map((Client client) -> clientToken).orElse(null),
+            Optional.ofNullable(customer).map((Customer customer) -> customerToken).orElse(null),
             Optional.ofNullable(items).map(this::toInsertOrderItems).orElse(null),
             status);
     }

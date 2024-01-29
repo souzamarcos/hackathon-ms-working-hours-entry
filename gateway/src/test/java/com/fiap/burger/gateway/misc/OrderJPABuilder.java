@@ -1,6 +1,6 @@
 package com.fiap.burger.gateway.misc;
 
-import com.fiap.burger.entity.client.Client;
+import com.fiap.burger.entity.customer.Customer;
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.gateway.order.model.OrderItemJPA;
 import com.fiap.burger.gateway.order.model.OrderJPA;
@@ -13,7 +13,7 @@ public class OrderJPABuilder {
 
     private Long id = 1L;
 
-    private Client client = new ClientBuilder().build();
+    private Customer customer = new CustomerBuilder().build();
 
     private List<OrderItemJPA> items = Collections.emptyList();
 
@@ -32,8 +32,8 @@ public class OrderJPABuilder {
         return this;
     }
 
-    public OrderJPABuilder withClient(Client client) {
-        this.client = client;
+    public OrderJPABuilder withClient(Customer customer) {
+        this.customer = customer;
         return this;
     }
 
@@ -58,7 +58,7 @@ public class OrderJPABuilder {
     }
 
     public OrderJPA build() {
-        return new OrderJPA(id, client.getId(), items, total, status, createdAt, modifiedAt, deletedAt);
+        return new OrderJPA(id, customer.getId(), items, total, status, createdAt, modifiedAt, deletedAt);
     }
 
 }

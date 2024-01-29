@@ -7,14 +7,18 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fiap.burger.usecase.misc.exception.TokenJwtException;
 import com.fiap.burger.usecase.misc.secret.SecretUtils;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class TokenJwtUtils {
-    private TokenJwtUtils() {
 
+    private final SecretUtils secretUtils;
+
+    public TokenJwtUtils(SecretUtils secretUtils) {
+        this.secretUtils = secretUtils;
     }
 
-    public static DecodedJWT readToken(String token) {
+    public DecodedJWT readToken(String token) {
         try {
             JWTVerifier verifier = buildJwtVerifier();
             return verifier.verify(token);
@@ -25,8 +29,8 @@ public class TokenJwtUtils {
         }
     }
 
-    private static JWTVerifier buildJwtVerifier() {
-        TokenJwtSecret jwtSecret = SecretUtils.getTokenJwtSecret();
+    private JWTVerifier buildJwtVerifier() {
+        TokenJwtSecret jwtSecret = secretUtils.getTokenJwtSecret();
         return JWT.require(buildAlgorithm(jwtSecret.getSecret()))
             .withIssuer(jwtSecret.getIssuer())
             .build();

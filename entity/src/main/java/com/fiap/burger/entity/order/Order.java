@@ -1,6 +1,6 @@
 package com.fiap.burger.entity.order;
 
-import com.fiap.burger.entity.client.Client;
+import com.fiap.burger.entity.customer.Customer;
 import com.fiap.burger.entity.common.BaseEntity;
 import com.fiap.burger.entity.product.Product;
 
@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 public class Order extends BaseEntity {
 
-    private String clientToken;
-    private Client client;
+    private String customerToken;
+    private Customer customer;
     private List<OrderItem> items;
     private Double total;
     private OrderStatus status;
@@ -31,7 +31,7 @@ public class Order extends BaseEntity {
     public int hashCode() {
         return Objects.hash(
             getId(),
-            getClientToken(),
+            getCustomerToken(),
             getItems(),
             getTotal(),
             getStatus(),
@@ -44,8 +44,8 @@ public class Order extends BaseEntity {
     @Override
     public String toString() {
         return "{" +
-            "clientToken='" + clientToken + '\'' +
-            ", client=" + client +
+            "customerToken='" + customerToken + '\'' +
+            ", customer=" + customer +
             ", items=" + items +
             ", total=" + total +
             ", status=" + status +
@@ -54,12 +54,12 @@ public class Order extends BaseEntity {
             '}';
     }
 
-    public String getClientToken() {
-        return clientToken;
+    public String getCustomerToken() {
+        return customerToken;
     }
 
-    public Client getClient() {
-        return client;
+    public Customer getCustomer() {
+        return customer;
     }
 
     public List<OrderItem> getItems() {
@@ -82,8 +82,8 @@ public class Order extends BaseEntity {
         this.status = status;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public List<Long> getProductIds() {
@@ -120,15 +120,15 @@ public class Order extends BaseEntity {
             });
     }
 
-    public Order(String clientId, List<OrderItem> items, OrderStatus status) {
-        this.clientToken = clientId;
+    public Order(String customerId, List<OrderItem> items, OrderStatus status) {
+        this.customerToken = customerId;
         this.items = items;
         this.status = status;
     }
 
     public Order(
         Long id,
-        Client client,
+        Customer customer,
         Double total,
         OrderStatus status,
         LocalDateTime createdAt,
@@ -136,7 +136,7 @@ public class Order extends BaseEntity {
         LocalDateTime deletedAt
     ) {
         this.id = id;
-        this.client = client;
+        this.customer = customer;
         this.total = total;
         this.status = status;
         this.createdAt = createdAt;
@@ -146,7 +146,7 @@ public class Order extends BaseEntity {
 
     public Order(
         Long id,
-        Client client,
+        Customer customer,
         List<OrderItem> items,
         Double total,
         OrderStatus status,
@@ -155,7 +155,7 @@ public class Order extends BaseEntity {
         LocalDateTime deletedAt
     ) {
         this.id = id;
-        this.client = client;
+        this.customer = customer;
         this.items = items;
         this.total = total;
         this.status = status;
