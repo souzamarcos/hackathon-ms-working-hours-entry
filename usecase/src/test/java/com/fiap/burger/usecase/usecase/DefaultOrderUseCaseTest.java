@@ -2,8 +2,10 @@ package com.fiap.burger.usecase.usecase;
 
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.entity.product.Category;
+import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
+import com.fiap.burger.usecase.misc.CustomerBuilder;
 import com.fiap.burger.usecase.misc.OrderBuilder;
 import com.fiap.burger.usecase.misc.ProductBuilder;
 import com.fiap.burger.usecase.misc.exception.EmptyAttributeException;
@@ -47,6 +49,9 @@ class DefaultOrderUseCaseTest {
     ProductGateway productGateway;
 
     @Mock
+    CustomerGateway customerGateway;
+
+    @Mock
     SecretUtils secretUtils;
 
     @InjectMocks
@@ -55,7 +60,7 @@ class DefaultOrderUseCaseTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-        useCase = new DefaultOrderUseCase(orderGateway, productGateway, new TokenJwtUtils(secretUtils));
+        useCase = new DefaultOrderUseCase(orderGateway, productGateway, customerGateway, new TokenJwtUtils(secretUtils));
     }
 
     @Test
@@ -130,11 +135,13 @@ class DefaultOrderUseCaseTest {
     void shouldInsertOrder() {
         var orderToInsert = new OrderBuilder().toInsert();
         var order = new OrderBuilder().withTotal(40.0).build();
+        var customer = new CustomerBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).withValue(30.0).build(), new ProductBuilder().withId(2L).withValue(10.0).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
         when(productGateway.findByIds(productIds)).thenReturn(products);
         when(orderGateway.save(orderToInsert)).thenReturn(order);
+        when(customerGateway.findById("1")).thenReturn(customer);
         when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
 
         var actual = useCase.insert(orderToInsert);
@@ -199,9 +206,11 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderProductNotFound() {
         var orderToInsert = new OrderBuilder().toInsert();
+        var customer = new CustomerBuilder().build();
         var products = List.of(new ProductBuilder().withId(2L).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
+        when(customerGateway.findById("1")).thenReturn(customer);
         when(productGateway.findByIds(productIds)).thenReturn(products);
         when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
 
@@ -214,9 +223,11 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderProductHasInvalidCategory() {
         var orderToInsert = new OrderBuilder().toInsert();
+        var customer = new CustomerBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).withCategory(Category.ADICIONAL).build(), new ProductBuilder().withId(2L).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
+        when(customerGateway.findById("1")).thenReturn(customer);
         when(productGateway.findByIds(productIds)).thenReturn(products);
         when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
 
@@ -229,9 +240,11 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderAdditionalProductNotFound() {
         var orderToInsert = new OrderBuilder().toInsert();
+        var customer = new CustomerBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).build());
         var productIds = List.of(1L, 2L);
 
+        when(customerGateway.findById("1")).thenReturn(customer);
         when(productGateway.findByIds(productIds)).thenReturn(products);
         when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
 
@@ -244,9 +257,11 @@ class DefaultOrderUseCaseTest {
     @Test
     void shouldThrownInvalidAttributeExceptionWhenOrderAdditionalProductHasInvalidCategory() {
         var orderToInsert = new OrderBuilder().toInsert();
+        var customer = new CustomerBuilder().build();
         var products = List.of(new ProductBuilder().withId(1L).build(), new ProductBuilder().withId(2L).withCategory(Category.LANCHE).build());
         var productIds = List.of(1L, 2L);
 
+        when(customerGateway.findById("1")).thenReturn(customer);
         when(productGateway.findByIds(productIds)).thenReturn(products);
         when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
 
@@ -258,7 +273,7 @@ class DefaultOrderUseCaseTest {
 
     @Test
     void shouldThrowNegativeOrZeroValueExceptionWhenOrderTotalIsInvalidToInsert() {
-        var orderToInsert = new OrderBuilder().toInsert();
+        var orderToInsert = new OrderBuilder().withCustomerToken(null).toInsert();
         var products = List.of(new ProductBuilder().withId(1L).withValue(-10.0).build(), new ProductBuilder().withId(2L).withValue(-10.0).withCategory(Category.ADICIONAL).build());
         var productIds = List.of(1L, 2L);
 
@@ -405,5 +420,22 @@ class DefaultOrderUseCaseTest {
 
         verify(productGateway, never()).findByIds(productIds);
         verify(orderGateway, never()).save(orderToInsert);
+    }
+
+    @Test
+    void shouldThrownInvalidAttributeExceptionWhenCustomerDoNotExistToInsert() {
+        var orderToInsert = new OrderBuilder().toInsert();
+        var products = List.of(new ProductBuilder().withId(1L).withValue(-10.0).build(), new ProductBuilder().withId(2L).withValue(-10.0).withCategory(Category.ADICIONAL).build());
+        var productIds = List.of(1L, 2L);
+
+        when(customerGateway.findById("1")).thenReturn(null);
+        when(productGateway.findByIds(productIds)).thenReturn(products);
+        when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
+
+        assertThrows(InvalidAttributeException.class, () -> useCase.insert(orderToInsert));
+
+        verify(customerGateway, times(1)).findById("1");
+        verify(productGateway, times(0)).findByIds(productIds);
+        verify(orderGateway, times(0)).save(any());
     }
 }

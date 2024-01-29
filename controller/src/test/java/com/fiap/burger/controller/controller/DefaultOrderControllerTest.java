@@ -1,7 +1,9 @@
 package com.fiap.burger.controller.controller;
 
+import com.fiap.burger.entity.customer.Customer;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
+import com.fiap.burger.gateway.order.gateway.DefaultCustomerGateway;
 import com.fiap.burger.gateway.order.gateway.DefaultProductGateway;
 import com.fiap.burger.messenger.order.DefaultOrderMessenger;
 import com.fiap.burger.usecase.misc.exception.OrderNotFoundException;
@@ -31,6 +33,9 @@ class DefaultOrderControllerTest {
 
     @Mock
     DefaultProductGateway productGateway;
+
+    @Mock
+    DefaultCustomerGateway customerGateway;
 
     @InjectMocks
     DefaultOrderController controller;
@@ -64,6 +69,26 @@ class DefaultOrderControllerTest {
             when(useCase.findById(id)).thenReturn(null);
 
             assertThrows(OrderNotFoundException.class, () -> controller.findById(id));
+
+            verify(useCase, times(1)).findById(id);
+        }
+
+
+        @Test
+        void shouldFindByIdWithClient() {
+            var id = 1L;
+            var customer = new Customer("1", "43280829062", "email@email.com", "Cliente Exemplo 01");
+            var order = new Order("1", Collections.emptyList(), OrderStatus.FINALIZADO);
+            var expected = new Order("1", Collections.emptyList(), OrderStatus.FINALIZADO);
+            expected.setCustomer(customer);
+
+            when(useCase.findById(id)).thenReturn(order);
+            when(productGateway.findByIds(anyList())).thenReturn(Collections.emptyList());
+            when(customerGateway.findById("1")).thenReturn(customer);
+
+            Order actual = controller.findById(id);
+
+            assertEquals(expected, actual);
 
             verify(useCase, times(1)).findById(id);
         }
