@@ -55,6 +55,7 @@ public class DefaultOrderUseCase implements OrderUseCase {
     public Order insert(Order order) {
         validateOrderToInsert(order);
         Customer customer = getCustomer(order);
+        order.setCustomer(customer);
         List<Long> productIds = order.getProductIds();
         List<Product> products = productGateway.findByIds(productIds.stream().distinct().toList());
         validateProducts(order, products);
