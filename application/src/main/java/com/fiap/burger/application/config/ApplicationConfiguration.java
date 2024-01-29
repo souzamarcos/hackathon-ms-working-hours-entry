@@ -1,5 +1,6 @@
 package com.fiap.burger.application.config;
 
+import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
 import com.fiap.burger.usecase.adapter.usecase.OrderUseCase;
@@ -16,8 +17,8 @@ import java.time.Duration;
 public class ApplicationConfiguration {
     @Bean
     public OrderUseCase orderUseCase(OrderGateway orderGateway, ProductGateway productGateway,
-                                     TokenJwtUtils tokenJwtUtils) {
-        return new DefaultOrderUseCase(orderGateway, productGateway, tokenJwtUtils);
+                                     CustomerGateway customerGateway, TokenJwtUtils tokenJwtUtils) {
+        return new DefaultOrderUseCase(orderGateway, productGateway, customerGateway, tokenJwtUtils);
     }
 
     @Bean

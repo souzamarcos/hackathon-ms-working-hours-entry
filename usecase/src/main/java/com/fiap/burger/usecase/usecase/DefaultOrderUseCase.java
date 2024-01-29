@@ -6,6 +6,7 @@ import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.entity.product.Category;
 import com.fiap.burger.entity.product.Product;
+import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
 import com.fiap.burger.usecase.adapter.gateway.ProductGateway;
 import com.fiap.burger.usecase.adapter.usecase.OrderUseCase;
@@ -23,12 +24,14 @@ public class DefaultOrderUseCase implements OrderUseCase {
     private static final String NEW_STATUS_FIELD = "newStatus";
     private final OrderGateway orderGateway;
     private final ProductGateway productGateway;
+    private final CustomerGateway customerGateway;
     private final TokenJwtUtils tokenJwtUtils;
 
     public DefaultOrderUseCase(OrderGateway orderGateway, ProductGateway productGateway,
-                               TokenJwtUtils tokenJwtUtils) {
+                               CustomerGateway customerGateway, TokenJwtUtils tokenJwtUtils) {
         this.orderGateway = orderGateway;
         this.productGateway = productGateway;
+        this.customerGateway = customerGateway;
         this.tokenJwtUtils = tokenJwtUtils;
     }
 
@@ -159,7 +162,11 @@ public class DefaultOrderUseCase implements OrderUseCase {
     private Customer getCustomer(Order order) {
         if (Optional.ofNullable(order.getCustomerToken()).isPresent()) {
             String customerId = extractIdFromToken(order.getCustomerToken());
-            return new Customer(customerId);
+            Customer customer = customerGateway.findById(customerId);
+            if (customer == null) {
+                throw new InvalidAttributeException(String.format("Customer '%s' not found.", customerId), "customerToken");
+            }
+            return customer;
         }
         return null;
     }
