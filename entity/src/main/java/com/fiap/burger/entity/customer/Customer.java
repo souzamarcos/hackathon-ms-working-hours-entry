@@ -9,10 +9,6 @@ public class Customer {
     private String email;
     private String name;
 
-    public Customer(String id) {
-        this.id = id;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -43,6 +39,13 @@ public class Customer {
         return name;
     }
 
+    public Customer() {
+    }
+
+    public Customer(String id) {
+        this.id = id;
+    }
+
     public Customer(String id, String cpf, String email, String name) {
         this.id = id;
         this.cpf = cpf;
@@ -59,7 +62,8 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer{" +
-            "cpf='" + cpf + '\'' +
+            "id='" + id + '\'' +
+            ", cpf='" + cpf + '\'' +
             ", email='" + email + '\'' +
             ", name='" + name + '\'' +
             '}';
