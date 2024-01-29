@@ -27,7 +27,11 @@ public class DefaultCustomerGateway implements CustomerGateway {
             }
         );
 
-        return responseEntity.getBody();
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            return responseEntity.getBody();
+        } else {
+            return null;
+        }
     }
 
     private String buildFindByIdUrl(String id) {
