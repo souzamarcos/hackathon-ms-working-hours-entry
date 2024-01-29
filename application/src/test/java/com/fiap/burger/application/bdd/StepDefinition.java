@@ -142,4 +142,9 @@ public class StepDefinition extends CucumberIntegrationTest {
             .statusCode(HttpStatus.OK.value())
             .body(matchesJsonSchemaInClasspath("schemas/ResumedOrderWithClientResponseSchema.json"));
     }
+
+    @Dado("que um pedido com cliente já foi registrado")
+    public void queUmPedidoComClienteJáFoiRegistrado() {
+        listOrderResponse = submeterUmNovoPedidoEspecificandoCliente();
+    }
 }

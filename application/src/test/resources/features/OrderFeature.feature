@@ -33,3 +33,8 @@ Funcionalidade: API - Pedidos
   Cenario: Registrar um novo pedido especificando cliente
     Quando submeter um novo pedido especificando cliente
     Entao o pedido especificando cliente é registrado com sucesso
+
+  Cenario: Buscar um pedido especificando cliente existente
+    Dado que um pedido com cliente já foi registrado
+    Quando requisitar a busca de um pedido por id
+    Entao o pedido especificando cliente é registrado com sucesso

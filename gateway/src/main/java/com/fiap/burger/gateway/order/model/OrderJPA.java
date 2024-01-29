@@ -70,7 +70,7 @@ public class OrderJPA extends BaseDomainJPA {
     public Order toEntity() {
         return new Order(
             id,
-            null,
+            Optional.ofNullable(customerId).map(Customer::new).orElse(null),
             total,
             status,
             createdAt,
