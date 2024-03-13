@@ -6,6 +6,7 @@ Projeto da pós graduação da FIAP de Arquitetura de Software
 * [Serviço de pedidos](https://github.com/souzamarcos/tech-challenge-ms-order)
 * [Serviço de pagamento](https://github.com/souzamarcos/tech-challenge-ms-payment)
 * [Serviço de cliente](https://github.com/souzamarcos/tech-challenge-ms-customer)
+* [Serviço de notificação](https://github.com/souzamarcos/tech-challenge-ms-notification)
 * [Infraestrutura Terraform](https://github.com/souzamarcos/tech-challenge-terraform)
 * [Configuração do Kubernetes](https://github.com/souzamarcos/tech-challenge-kubernetes)
 * [Lambda de Autenticação](https://github.com/souzamarcos/tech-challenge-authentication-lambda)
