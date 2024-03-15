@@ -2,6 +2,7 @@ package com.fiap.burger.usecase.misc.secret;
 
 
 import com.fiap.burger.usecase.misc.exception.SecretAwsException;
+import com.fiap.burger.usecase.misc.profiles.NotTest;
 import com.fiap.burger.usecase.misc.profiles.Production;
 import com.fiap.burger.usecase.misc.token.TokenJwtSecret;
 import com.google.gson.Gson;
@@ -12,6 +13,7 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
 
 @Production
+@NotTest
 @Service
 public class DefaultSecretUtils implements SecretUtils {
     private static final String TOKEN_JWT_SECRET_NAME = "token_jwt";

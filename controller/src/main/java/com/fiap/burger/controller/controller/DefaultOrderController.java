@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import jakarta.transaction.Transactional;
 
 @Component
 public class DefaultOrderController implements OrderController {
@@ -29,6 +30,7 @@ public class DefaultOrderController implements OrderController {
     CustomerGateway customerGateway;
 
     @Override
+    @Transactional
     public Order insert(Order order) {
         var persistedOrder = useCase.insert(order);
         orderMessenger.sendMessage(persistedOrder);
