@@ -36,6 +36,8 @@ public class AwsSQSConfiguration
     }
 
     @Bean
+    @Primary
+    @NotTest
     public AmazonSQSAsync defaultAmazonSQSAsync() {
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(LOCALSTACK_ENDPOINT, awsRegion);
 

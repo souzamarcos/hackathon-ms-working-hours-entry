@@ -8,4 +8,5 @@ dependencies {
     implementation(rootProject.libs.spring.messaging)
     implementation(rootProject.libs.spring.cloud.starter.aws)
     implementation(rootProject.libs.spring.cloud.starter.aws.messaging)
+    implementation(rootProject.libs.spring.boot.starter.data.jpa)
 }

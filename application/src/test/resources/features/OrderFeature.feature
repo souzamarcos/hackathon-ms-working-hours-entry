@@ -38,3 +38,9 @@ Funcionalidade: API - Pedidos
     Dado que um pedido com cliente já foi registrado
     Quando requisitar a busca de um pedido por id
     Entao o pedido especificando cliente é registrado com sucesso
+
+  Cenario: Buscar pedidos com cliente em progresso
+    Dado que um pedido com cliente já foi registrado
+    Quando realizar o checkout do pedido
+    E requisitar a busca de pedidos em progresso
+    Entao pedido deve estar entre os pedidos retornados
