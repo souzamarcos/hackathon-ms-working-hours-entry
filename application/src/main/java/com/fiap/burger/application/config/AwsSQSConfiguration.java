@@ -54,7 +54,7 @@ public class AwsSQSConfiguration
     }
 
     @Bean
-    public QueueMessagingTemplate queueMessagingTemplate(AmazonSQS amazonSQS) {
-        return new QueueMessagingTemplate((AmazonSQSAsync) amazonSQS);
+    public QueueMessagingTemplate queueMessagingTemplate(AmazonSQSAsync amazonSQSAsync) {
+        return new QueueMessagingTemplate(amazonSQSAsync);
     }
 }
