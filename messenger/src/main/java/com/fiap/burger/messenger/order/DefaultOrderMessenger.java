@@ -28,7 +28,7 @@ public class DefaultOrderMessenger implements OrderMessenger {
             var dto = OrderMessageDto.toDto(order);
             this.queueMessagingTemplate.send(queueName, MessageBuilder.withPayload(new Gson().toJson(dto)).build());
         } catch (MessagingException messagingException) {
-            throw new OrderMessagerException(messagingException.getMessage());
+            throw new OrderMessagerException(messagingException);
         }
     }
 }
