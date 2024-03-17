@@ -1,10 +1,31 @@
 package com.fiap.burger.entity.order;
 
+import com.fiap.burger.entity.notification.NotificationType;
+
 public enum OrderStatus {
-    CANCELADO,
+    CANCELADO {
+        @Override
+        public NotificationType asNotificationType() {
+            return NotificationType.PAGAMENTO_NAO_CONFIRMADO;
+        }
+    },
     AGUARDANDO_PAGAMENTO,
-    RECEBIDO,
+    RECEBIDO {
+        @Override
+        public NotificationType asNotificationType() {
+            return NotificationType.PAGAMENTO_CONFIRMADO;
+        }
+    },
     EM_PREPARACAO,
-    PRONTO,
-    FINALIZADO
+    PRONTO {
+        @Override
+        public NotificationType asNotificationType() {
+            return NotificationType.PEDIDO_PRONTO;
+        }
+    },
+    FINALIZADO;
+
+    public NotificationType asNotificationType() {
+        return null;
+    }
 }

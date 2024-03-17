@@ -1,4 +1,4 @@
-package com.fiap.burger.messenger;
+package com.fiap.burger.messenger.order;
 
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
