@@ -5,6 +5,7 @@ import com.fiap.burger.usecase.misc.exception.SecretAwsException;
 import com.fiap.burger.usecase.misc.profiles.Production;
 import com.fiap.burger.usecase.misc.token.TokenJwtSecret;
 import com.google.gson.Gson;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
@@ -12,6 +13,7 @@ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueReques
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
 
 @Production
+@Primary
 @Service
 public class DefaultSecretUtils implements SecretUtils {
     private static final String TOKEN_JWT_SECRET_NAME = "token_jwt";
