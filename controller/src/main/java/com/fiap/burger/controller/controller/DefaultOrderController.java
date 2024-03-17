@@ -1,8 +1,11 @@
 package com.fiap.burger.controller.controller;
 
 import com.fiap.burger.controller.adapter.api.OrderController;
+import com.fiap.burger.entity.customer.Customer;
+import com.fiap.burger.entity.notification.Notification;
 import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
+import com.fiap.burger.messenger.adapter.NotificationMessenger;
 import com.fiap.burger.messenger.adapter.OrderMessenger;
 import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
 import com.fiap.burger.usecase.adapter.gateway.OrderGateway;
@@ -28,6 +31,8 @@ public class DefaultOrderController implements OrderController {
     OrderMessenger orderMessenger;
     @Autowired
     CustomerGateway customerGateway;
+    @Autowired
+    NotificationMessenger notificationMessenger;
 
     @Override
     @Transactional
@@ -51,8 +56,11 @@ public class DefaultOrderController implements OrderController {
     }
 
     @Override
+    @Transactional
     public Order updateStatus(Long orderId, OrderStatus newStatus) {
-        return useCase.updateStatus(orderId, newStatus);
+        var modifiedOrder = useCase.updateStatus(orderId, newStatus);
+        sendNotificationMessage(modifiedOrder);
+        return modifiedOrder;
     }
 
     @Override
@@ -67,7 +75,20 @@ public class DefaultOrderController implements OrderController {
 
     @Override
     public Order checkout(Long orderId) {
-        return useCase.checkout(orderId);
+        var modifiedOrder = useCase.checkout(orderId);
+        sendNotificationMessage(modifiedOrder);
+        return modifiedOrder;
+    }
+
+    private void sendNotificationMessage(Order order) {
+        if (Boolean.TRUE.equals(shouldNotify(order))) {
+            notificationMessenger.sendMessage(new Notification(order));
+        }
+    }
+
+    private Boolean shouldNotify(Order order) {
+        return Optional.ofNullable(order.getCustomer()).map(Customer::getId).orElse(null) != null &&
+            order.getStatus().asNotificationType() != null;
     }
 }
 

@@ -5,6 +5,7 @@ import com.fiap.burger.entity.order.Order;
 import com.fiap.burger.entity.order.OrderStatus;
 import com.fiap.burger.gateway.order.gateway.DefaultCustomerGateway;
 import com.fiap.burger.gateway.order.gateway.DefaultProductGateway;
+import com.fiap.burger.messenger.notification.DefaultNotificationMessenger;
 import com.fiap.burger.messenger.order.DefaultOrderMessenger;
 import com.fiap.burger.usecase.misc.exception.OrderNotFoundException;
 import com.fiap.burger.usecase.usecase.DefaultOrderUseCase;
@@ -29,7 +30,10 @@ class DefaultOrderControllerTest {
     DefaultOrderUseCase useCase;
 
     @Mock
-    DefaultOrderMessenger messenger;
+    DefaultOrderMessenger orderMessenger;
+
+    @Mock
+    DefaultNotificationMessenger notificationMessenger;
 
     @Mock
     DefaultProductGateway productGateway;
@@ -139,29 +143,59 @@ class DefaultOrderControllerTest {
             assertEquals(order, actual);
 
             verify(useCase, times(1)).insert(order);
+            verify(orderMessenger, times(1)).sendMessage(order);
         }
     }
 
     @Nested
     class updateStatusOrder {
         @Test
-        void shouldUpdateStatusOrder() {
-            var order = new Order(null, Collections.emptyList(), OrderStatus.EM_PREPARACAO);
+        void shouldUpdateStatusOrderToEmPreparacao() {
+            var expected = new Order(1L, new Customer("1"), Collections.emptyList(), 10.0, OrderStatus.EM_PREPARACAO, LocalDateTime.now(), null, null);
 
-            when(useCase.updateStatus(1L, OrderStatus.EM_PREPARACAO)).thenReturn(order);
+            when(useCase.updateStatus(1L, OrderStatus.EM_PREPARACAO)).thenReturn(expected);
 
             Order actual = controller.updateStatus(1L, OrderStatus.EM_PREPARACAO);
 
-            assertEquals(order, actual);
+            assertEquals(expected, actual);
 
             verify(useCase, times(1)).updateStatus(1L, OrderStatus.EM_PREPARACAO);
+            verify(notificationMessenger, never()).sendMessage(any());
+        }
+
+        @Test
+        void shouldUpdateStatusOrderToPronto() {
+            var expected = new Order(1L, new Customer("1"), Collections.emptyList(), 10.0, OrderStatus.PRONTO, LocalDateTime.now(), null, null);
+
+            when(useCase.updateStatus(1L, OrderStatus.PRONTO)).thenReturn(expected);
+
+            Order actual = controller.updateStatus(1L, OrderStatus.PRONTO);
+
+            assertEquals(expected, actual);
+
+            verify(useCase, times(1)).updateStatus(1L, OrderStatus.PRONTO);
+            verify(notificationMessenger, times(1)).sendMessage(any());
+        }
+
+        @Test
+        void shouldUpdateStatusOrderToFinalizado() {
+            var expected = new Order(1L, null, Collections.emptyList(), 10.0, OrderStatus.FINALIZADO, LocalDateTime.now(), null, null);
+
+            when(useCase.updateStatus(1L, OrderStatus.FINALIZADO)).thenReturn(expected);
+
+            Order actual = controller.updateStatus(1L, OrderStatus.FINALIZADO);
+
+            assertEquals(expected, actual);
+
+            verify(useCase, times(1)).updateStatus(1L, OrderStatus.FINALIZADO);
+            verify(notificationMessenger, never()).sendMessage(any());
         }
     }
     
     @Nested
     class checkout {
         @Test
-        void shouldCheckout() {
+        void shouldCheckoutOrderWithoutCustomer() {
             var order = new Order(1L, null, Collections.emptyList(), 10.0, OrderStatus.RECEBIDO, LocalDateTime.now(), null, null);
 
             when(useCase.checkout(1L)).thenReturn(order);
@@ -171,7 +205,21 @@ class DefaultOrderControllerTest {
             assertEquals(order, actual);
 
             verify(useCase, times(1)).checkout(1L);
+            verify(notificationMessenger, never()).sendMessage(any());
+        }
 
+        @Test
+        void shouldCheckoutOrderWithCustomer() {
+            var order = new Order(1L, new Customer("1"), Collections.emptyList(), 10.0, OrderStatus.RECEBIDO, LocalDateTime.now(), null, null);
+
+            when(useCase.checkout(1L)).thenReturn(order);
+
+            Order actual = controller.checkout(1L);
+
+            assertEquals(order, actual);
+
+            verify(useCase, times(1)).checkout(1L);
+            verify(notificationMessenger, times(1)).sendMessage(any());
         }
     }
 }
