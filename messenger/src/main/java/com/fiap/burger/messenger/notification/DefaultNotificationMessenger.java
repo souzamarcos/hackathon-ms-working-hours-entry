@@ -2,7 +2,7 @@ package com.fiap.burger.messenger.notification;
 
 import com.fiap.burger.entity.notification.Notification;
 import com.fiap.burger.messenger.adapter.NotificationMessenger;
-import com.fiap.burger.usecase.misc.exception.OrderMessagerException;
+import com.fiap.burger.usecase.misc.exception.NotificationMessagerException;
 import com.fiap.burger.usecase.misc.profiles.NotTest;
 import com.fiap.burger.usecase.misc.profiles.Production;
 import com.google.gson.Gson;
@@ -29,7 +29,7 @@ public class DefaultNotificationMessenger implements NotificationMessenger {
             var dto = new NotificationMessageDto(notification);
             this.queueMessagingTemplate.send(queueName, MessageBuilder.withPayload(new Gson().toJson(dto)).build());
         } catch (MessagingException messagingException) {
-            throw new OrderMessagerException(messagingException.getMessage());
+            throw new NotificationMessagerException(messagingException);
         }
     }
 }
