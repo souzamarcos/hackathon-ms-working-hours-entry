@@ -14,17 +14,23 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DefaultWorkingHourEntryMessenger implements WorkingHourEntryMessenger {
-    @Value("${cloud.aws.sqs.working-hour-entry-queue}")
-    private String queueName;
 
-    @Autowired
+    private String queueName;
     private QueueMessagingTemplate queueMessagingTemplate;
+
+    public DefaultWorkingHourEntryMessenger(
+        @Value("${cloud.aws.sqs.working-hour-entry-queue}") String queueName,
+        @Autowired QueueMessagingTemplate queueMessagingTemplate
+    ) {
+        this.queueName = queueName;
+        this.queueMessagingTemplate = queueMessagingTemplate;
+    }
 
     @Override
     public void sendMessage(WorkingHourRegistry registry) {
         try {
             var dto = WorkingHourRegistryMessageDto.toMessageDto(registry);
-            this.queueMessagingTemplate.send(queueName, MessageBuilder.withPayload(new Gson().toJson(dto)).build());
+            queueMessagingTemplate.send(queueName, MessageBuilder.withPayload(new Gson().toJson(dto)).build());
         } catch (MessagingException messagingException) {
             throw new WorkingHourEntryMessagerException(messagingException);
         }
