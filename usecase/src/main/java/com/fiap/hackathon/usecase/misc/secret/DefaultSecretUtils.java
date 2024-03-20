@@ -3,7 +3,6 @@ package com.fiap.hackathon.usecase.misc.secret;
 
 import com.fiap.hackathon.usecase.misc.exception.SecretAwsException;
 import com.fiap.hackathon.usecase.misc.profiles.Production;
-import com.fiap.hackathon.usecase.misc.token.TokenJwtSecret;
 import com.google.gson.Gson;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

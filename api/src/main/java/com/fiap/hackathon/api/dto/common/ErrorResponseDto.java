@@ -1,5 +1,6 @@
 package com.fiap.hackathon.api.dto.common;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.fiap.hackathon.usecase.misc.exception.DomainException;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,7 +13,13 @@ public record ErrorResponseDto(@NotNull List<ErrorResponseDataDto> errors) {
             return new ErrorResponseDto(
                 List.of(new ErrorResponseDataDto(exception.getMessage(), domainException.getParameters()))
             );
-        } else return defaultError();
+        }
+        if (exception instanceof JWTVerificationException) {
+            return  new ErrorResponseDto(
+                    List.of(new ErrorResponseDataDto(exception.getMessage(), Map.of("header", "Authorization")))
+            );
+        }
+        return defaultError();
     }
 
     private static ErrorResponseDto defaultError() {
