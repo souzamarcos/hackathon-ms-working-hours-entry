@@ -1,11 +1,11 @@
 package com.fiap.hackathon.api.api;
 
-import com.fiap.hackathon.api.dto.order.response.WorkingHourRegistryResponseDto;
+import com.fiap.hackathon.api.dto.workinghour.response.WorkingHourRegistryResponseDto;
 import com.fiap.hackathon.controller.adapter.api.WorkingHourRegistryController;
 import com.fiap.hackathon.entity.WorkingHourRegistry;
 import com.fiap.hackathon.usecase.misc.secret.SecretUtils;
-import com.fiap.hackathon.usecase.misc.token.TokenJwtSecret;
-import com.fiap.hackathon.usecase.misc.token.TokenJwtUtils;
+import com.fiap.hackathon.usecase.misc.secret.TokenJwtSecret;
+import com.fiap.hackathon.api.misc.token.TokenJwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +46,7 @@ class WorkingHourEntryApiTest {
         when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
         when(controller.insert(any())).thenReturn(registry);
 
-        WorkingHourRegistryResponseDto actual = api.insert(headerToken);
+        WorkingHourRegistryResponseDto actual = api.insert();
 
         assertEquals(expected, actual);
 

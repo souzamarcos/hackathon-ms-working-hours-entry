@@ -1,4 +1,4 @@
-package com.fiap.hackathon.usecase.misc.token;
+package com.fiap.hackathon.usecase.misc.secret;
 
 import com.fiap.hackathon.usecase.misc.exception.SecretAwsException;
 import com.google.gson.annotations.SerializedName;

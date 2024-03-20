@@ -1,7 +1,6 @@
 package com.fiap.hackathon.usecase.misc.secret;
 
 import com.fiap.hackathon.usecase.misc.profiles.NotProduction;
-import com.fiap.hackathon.usecase.misc.token.TokenJwtSecret;
 import org.springframework.stereotype.Service;
 
 @NotProduction

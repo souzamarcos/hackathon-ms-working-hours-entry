@@ -1,13 +1,18 @@
-package com.fiap.hackathon.usecase.misc.token;
+package com.fiap.hackathon.api.misc.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fiap.hackathon.usecase.misc.exception.TokenJwtException;
 import com.fiap.hackathon.usecase.misc.secret.SecretUtils;
+import com.fiap.hackathon.usecase.misc.secret.TokenJwtSecret;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TokenJwtUtils {
@@ -16,6 +21,28 @@ public class TokenJwtUtils {
 
     public TokenJwtUtils(SecretUtils secretUtils) {
         this.secretUtils = secretUtils;
+    }
+
+    public String getEmployeeIdFromToken(String token) {
+        try {
+            return readToken(token)
+                    .getClaim("id")
+                    .asString();
+        } catch (JWTVerificationException exception){
+            throw new JWTVerificationException("Token inválido ou expirado.");
+        }
+    }
+
+    public List<SimpleGrantedAuthority> getAuthoritiesFromToken(String token) {
+        try {
+            return List.of(new SimpleGrantedAuthority(
+                readToken(token)
+                    .getClaim("type")
+                    .asString())
+            );
+        } catch (JWTVerificationException exception){
+            throw new JWTVerificationException("Token inválido ou expirado.");
+        }
     }
 
     public DecodedJWT readToken(String token) {
