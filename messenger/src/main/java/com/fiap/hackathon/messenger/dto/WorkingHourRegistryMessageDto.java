@@ -2,11 +2,11 @@ package com.fiap.hackathon.messenger.dto;
 
 import com.fiap.hackathon.entity.WorkingHourRegistry;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record  WorkingHourRegistryMessageDto (
     String employeeId,
-    LocalDateTime registryDateTime
+    Instant registryDateTime
 ){
     public static WorkingHourRegistryMessageDto toMessageDto(WorkingHourRegistry registry) {
         return new WorkingHourRegistryMessageDto(registry.employeeId(), registry.registryDateTime());

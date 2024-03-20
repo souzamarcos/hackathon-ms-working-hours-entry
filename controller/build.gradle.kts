@@ -5,6 +5,5 @@ dependencies {
 
     implementation(rootProject.libs.spring.beans)
     implementation(rootProject.libs.openapi)
-    implementation(rootProject.libs.spring.boot.starter.data.jpa)
 }
 

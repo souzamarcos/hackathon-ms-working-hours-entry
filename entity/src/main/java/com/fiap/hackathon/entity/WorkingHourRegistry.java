@@ -1,8 +1,8 @@
 package com.fiap.hackathon.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public record WorkingHourRegistry (
     String employeeId,
-    LocalDateTime registryDateTime
+    Instant registryDateTime
 ) {}

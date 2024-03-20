@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -28,7 +28,7 @@ class DefaultOrderUseCaseTest {
 
     @Test
     void shouldInsert() {
-        var registry = new WorkingHourRegistry("123", LocalDateTime.now());
+        var registry = new WorkingHourRegistry("123", Instant.now());
         var expected = registry;
 
         doNothing().when(messenger).sendMessage(registry);

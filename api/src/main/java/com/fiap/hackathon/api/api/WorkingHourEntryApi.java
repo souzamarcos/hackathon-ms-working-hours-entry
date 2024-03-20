@@ -8,19 +8,29 @@ import com.fiap.hackathon.usecase.misc.exception.InvalidAttributeException;
 import com.fiap.hackathon.usecase.misc.exception.TokenJwtException;
 import com.fiap.hackathon.usecase.misc.token.TokenJwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/working-hour-entry")
 @Tag(name = "working-hour-entry", description = "API responsável pela entrada dos registros de ponto dos funcionários.")
+@SecurityScheme(
+    name = "Bearer Authentication",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+    scheme = "bearer"
+)
 public class WorkingHourEntryApi {
 
     @Autowired
@@ -38,11 +48,12 @@ public class WorkingHourEntryApi {
 
     @Operation(summary = "Bater ponto", description = "Inserir registro de ponto", tags = {"working-hour-entry"})
     @ApiResponses(value = {@ApiResponse(responseCode = "400", description = "Request inválida")})
-    @PostMapping()
-    public WorkingHourRegistryResponseDto insert(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping
+    public WorkingHourRegistryResponseDto insert(@RequestHeader(name = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         var token = validateAndExtractToken(authorizationHeader);
         var employeeId = extractIdFromToken(token);
-        var registry = new WorkingHourRegistry(employeeId, LocalDateTime.now());
+        var registry = new WorkingHourRegistry(employeeId, Instant.now());
         return WorkingHourRegistryResponseDto.toResponseDto(controller.insert(registry));
     }
 

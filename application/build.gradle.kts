@@ -5,9 +5,10 @@ plugins {
 }
 
 application {
-    mainClass.set("com.fiap.burger.application.boot.BurgerApplication")
+    mainClass.set("com.fiap.hackathon.application.boot.BurgerApplication")
     applicationDefaultJvmArgs = listOf(
-            "-Duser.timezone=America/Sao_Paulo"
+        "-Duser.timezone=America/Sao_Paulo",
+        "--add-opens=java.base/java.time=ALL-UNNAMED"
     )
 }
 
@@ -16,6 +17,7 @@ dependencies {
     implementation(project(":usecase"))
     implementation(project(":controller"))
     implementation(project(":api"))
+    implementation(project(":messenger"))
 
     implementation(rootProject.libs.spring.boot.starter.web)
     implementation(rootProject.libs.spring.messaging)

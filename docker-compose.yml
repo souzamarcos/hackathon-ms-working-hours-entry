@@ -12,10 +12,10 @@ services:
       - AWS_ACCESS_KEY_ID=fiap
       - AWS_SECRET_ACCESS_KEY=fiap
       - DEFAULT_REGION=us-east-1
-      - SERVICES=dynamodb
+      - SERVICES=sqs
     volumes:
       - "./config/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
-      - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
       localstack:

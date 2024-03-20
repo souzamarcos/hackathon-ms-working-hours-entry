@@ -4,5 +4,5 @@
 //import org.springframework.test.context.ContextConfiguration;
 //
 //@ContextConfiguration
-//@ComponentScan(basePackages = "com.fiap.burger")
+//@ComponentScan(basePackages = "com.fiap.hackathon")
 //public class CucumberTestConfig { }

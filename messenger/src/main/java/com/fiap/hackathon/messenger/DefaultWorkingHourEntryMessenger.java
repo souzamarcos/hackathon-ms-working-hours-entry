@@ -1,4 +1,4 @@
-package com.fiap.hackathon.messenger.order;
+package com.fiap.hackathon.messenger;
 
 import com.fiap.hackathon.entity.WorkingHourRegistry;
 import com.fiap.hackathon.messenger.dto.WorkingHourRegistryMessageDto;

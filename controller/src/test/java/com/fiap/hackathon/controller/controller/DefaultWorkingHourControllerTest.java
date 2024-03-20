@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,7 +32,7 @@ class DefaultWorkingHourControllerTest {
     class insert {
         @Test
         void shouldInsert() {
-            var expected = new WorkingHourRegistry("123", LocalDateTime.now());
+            var expected = new WorkingHourRegistry("123", Instant.now());
 
             when(useCase.insert(expected)).thenReturn(expected);
 
