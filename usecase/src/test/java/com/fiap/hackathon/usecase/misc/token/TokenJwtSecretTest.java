@@ -1,6 +1,7 @@
 package com.fiap.hackathon.usecase.misc.token;
 
 import com.fiap.hackathon.usecase.misc.exception.SecretAwsException;
+import com.fiap.hackathon.usecase.misc.secret.TokenJwtSecret;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
