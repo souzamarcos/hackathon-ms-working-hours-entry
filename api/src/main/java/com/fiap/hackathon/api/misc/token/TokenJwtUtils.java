@@ -6,13 +6,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fiap.hackathon.usecase.misc.exception.TokenJwtException;
 import com.fiap.hackathon.usecase.misc.secret.SecretUtils;
 import com.fiap.hackathon.usecase.misc.secret.TokenJwtSecret;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TokenJwtUtils {
@@ -25,23 +25,25 @@ public class TokenJwtUtils {
 
     public String getEmployeeIdFromToken(String token) {
         try {
-            return readToken(token)
+            return Optional.ofNullable(readToken(token)
                     .getClaim("id")
-                    .asString();
-        } catch (JWTVerificationException exception){
-            throw new JWTVerificationException("Token inválido ou expirado.");
+                    .asString()).orElseThrow(() -> new JWTVerificationException("Token claim 'id' required"));
+        } catch (JWTVerificationException exception) {
+            throw exception;
+        } catch (Exception exception){
+            throw new JWTVerificationException("Token inválido ou expirado.", exception);
         }
     }
 
     public List<SimpleGrantedAuthority> getAuthoritiesFromToken(String token) {
         try {
-            return List.of(new SimpleGrantedAuthority(
-                readToken(token)
-                    .getClaim("type")
-                    .asString())
-            );
-        } catch (JWTVerificationException exception){
-            throw new JWTVerificationException("Token inválido ou expirado.");
+            String type = Optional.ofNullable(readToken(token).getClaim("type").asString())
+                    .orElseThrow(() -> new JWTVerificationException("Token claim 'type' required"));
+            return List.of(new SimpleGrantedAuthority(type));
+        } catch (JWTVerificationException exception) {
+            throw exception;
+        } catch (Exception exception){
+            throw new JWTVerificationException("Token inválido ou expirado.", exception);
         }
     }
 
@@ -50,9 +52,9 @@ public class TokenJwtUtils {
             JWTVerifier verifier = buildJwtVerifier();
             return verifier.verify(token);
         } catch (TokenExpiredException exception) {
-            throw new TokenJwtException("Token JWT expired at " + exception.getExpiredOn(), exception);
+            throw new JWTVerificationException("Token JWT expired at " + exception.getExpiredOn(), exception);
         } catch (Exception exception) {
-            throw new TokenJwtException("Token JWT Error: " + exception.getMessage(), exception);
+            throw new JWTVerificationException("Token JWT Error: " + exception.getMessage(), exception);
         }
     }
 
