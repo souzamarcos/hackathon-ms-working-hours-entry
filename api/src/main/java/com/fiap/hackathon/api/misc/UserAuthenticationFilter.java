@@ -52,7 +52,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response); // Continua o processamento da requisição
         } catch (Exception e) {
-            resolver.resolveException(request, response, null, e);
+            resolver.resolveException(request, response, null, new JWTVerificationException(e.getMessage(), e));
         }
     }
 

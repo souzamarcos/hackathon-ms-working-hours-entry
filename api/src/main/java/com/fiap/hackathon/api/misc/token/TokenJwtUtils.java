@@ -24,27 +24,15 @@ public class TokenJwtUtils {
     }
 
     public String getEmployeeIdFromToken(String token) {
-        try {
-            return Optional.ofNullable(readToken(token)
-                    .getClaim("id")
-                    .asString()).orElseThrow(() -> new JWTVerificationException("Token claim 'id' required"));
-        } catch (JWTVerificationException exception) {
-            throw exception;
-        } catch (Exception exception){
-            throw new JWTVerificationException("Token inválido ou expirado.", exception);
-        }
+        return Optional.ofNullable(readToken(token)
+                .getClaim("id")
+                .asString()).orElseThrow(() -> new JWTVerificationException("Token claim 'id' required"));
     }
 
     public List<SimpleGrantedAuthority> getAuthoritiesFromToken(String token) {
-        try {
-            String type = Optional.ofNullable(readToken(token).getClaim("type").asString())
-                    .orElseThrow(() -> new JWTVerificationException("Token claim 'type' required"));
-            return List.of(new SimpleGrantedAuthority(type));
-        } catch (JWTVerificationException exception) {
-            throw exception;
-        } catch (Exception exception){
-            throw new JWTVerificationException("Token inválido ou expirado.", exception);
-        }
+        String type = Optional.ofNullable(readToken(token).getClaim("type").asString())
+                .orElseThrow(() -> new JWTVerificationException("Token claim 'type' required"));
+        return List.of(new SimpleGrantedAuthority(type));
     }
 
     public DecodedJWT readToken(String token) {
