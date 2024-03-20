@@ -5,7 +5,6 @@ import com.fiap.hackathon.messenger.dto.WorkingHourRegistryMessageDto;
 import com.fiap.hackathon.usecase.adapter.messager.WorkingHourEntryMessenger;
 import com.fiap.hackathon.usecase.misc.exception.WorkingHourEntryMessagerException;
 import com.google.gson.Gson;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
 import org.springframework.messaging.MessagingException;
@@ -20,7 +19,7 @@ public class DefaultWorkingHourEntryMessenger implements WorkingHourEntryMesseng
 
     public DefaultWorkingHourEntryMessenger(
         @Value("${cloud.aws.sqs.working-hour-entry-queue}") String queueName,
-        @Autowired QueueMessagingTemplate queueMessagingTemplate
+        QueueMessagingTemplate queueMessagingTemplate
     ) {
         this.queueName = queueName;
         this.queueMessagingTemplate = queueMessagingTemplate;

@@ -14,12 +14,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -33,14 +31,12 @@ import java.util.Optional;
 )
 public class WorkingHourEntryApi {
 
-    @Autowired
     private TokenJwtUtils tokenJwtUtils;
-    @Autowired
     private WorkingHourRegistryController controller;
 
     public WorkingHourEntryApi(
-        @Autowired TokenJwtUtils tokenJwtUtils,
-        @Autowired WorkingHourRegistryController controller
+        TokenJwtUtils tokenJwtUtils,
+        WorkingHourRegistryController controller
     ) {
         this.tokenJwtUtils = tokenJwtUtils;
         this.controller = controller;
