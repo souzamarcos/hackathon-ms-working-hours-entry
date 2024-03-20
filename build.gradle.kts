@@ -44,6 +44,9 @@ subprojects {
 		testLogging {
 			events("passed", "skipped", "failed")
 		}
+		jvmArgs = listOf(
+			"--add-opens=java.base/java.time=ALL-UNNAMED"
+		)
 		finalizedBy(tasks.jacocoTestReport)
 	}
 

@@ -1,14 +1,18 @@
 version: '3.3'
 services:
-  mysql:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'burger'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
+  localstack:
+    image: localstack/localstack
     ports:
-      - '3307:3306'
-    expose:
-      - '3307'
+      - "127.0.0.1:4510-4530:4510-4530"
+      - "127.0.0.1:4566:4566"
+      - "127.0.0.1:4571:4571"
+    environment:
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=fiap
+      - AWS_SECRET_ACCESS_KEY=fiap
+      - DEFAULT_REGION=us-east-1
+      - SERVICES=sqs
+    volumes:
+      - "./config/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
