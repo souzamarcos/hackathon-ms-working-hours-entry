@@ -23,12 +23,17 @@ import java.util.List;
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
 
-    @Autowired
-    private TokenJwtUtils jwtTokenService; // Service que definimos anteriormente
+    private TokenJwtUtils jwtTokenService;
+
+    public UserAuthenticationFilter(
+        @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver,
+        @Autowired TokenJwtUtils jwtTokenService
+    ) {
+        this.resolver = resolver;
+        this.jwtTokenService = jwtTokenService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
