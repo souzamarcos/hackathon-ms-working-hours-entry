@@ -98,4 +98,4 @@ jobs:
 
       - name: Deploy to EKS
         run: |
-          kubectl rollout restart deploy ms-order-deployment
+          kubectl rollout restart deploy ms-working-hours-entry-deployment
