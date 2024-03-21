@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,6 +43,28 @@ class TokenJwtUtilsTest {
 
         DecodedJWT result = tokenJwtUtils.readToken(validToken);
         assertEquals(expected, result.getClaim("customerId").asString());
+    }
+
+    @Test
+    void readTokenEmployeeId() {
+        var expected = "111";
+        String validToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImlzcyI6IlRFU1QtSVNTVUVSIiwiaWQiOiIxMTEiLCJ0eXBlIjoiVVNFUiIsImlhdCI6MTcwNjQxMzQzMiwianRpIjoiZjA0MjNlNGMtN2MxMC00YjM1LThkOTUtZGJmYWZjM2NmZGE0In0.PLZX8VKOBRVz4m4w-zVrUV3fymA9Q_Jw65DSvZJpdwc";
+
+        when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
+
+        String result = tokenJwtUtils.getEmployeeIdFromToken(validToken);
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void readTokenAuthorities() {
+        var expected = List.of(new SimpleGrantedAuthority("USER"));
+        String validToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImlzcyI6IlRFU1QtSVNTVUVSIiwiaWQiOiIxMTEiLCJ0eXBlIjoiVVNFUiIsImlhdCI6MTcwNjQxMzQzMiwianRpIjoiZjA0MjNlNGMtN2MxMC00YjM1LThkOTUtZGJmYWZjM2NmZGE0In0.PLZX8VKOBRVz4m4w-zVrUV3fymA9Q_Jw65DSvZJpdwc";
+
+        when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
+
+        var result = tokenJwtUtils.getAuthoritiesFromToken(validToken);
+        assertEquals(expected, result);
     }
 
     @Test
