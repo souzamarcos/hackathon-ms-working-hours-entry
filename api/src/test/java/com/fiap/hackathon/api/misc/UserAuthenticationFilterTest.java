@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,6 +42,7 @@ class UserAuthenticationFilterTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 
     @Test
@@ -50,6 +52,7 @@ class UserAuthenticationFilterTest {
         var type = "USER";
         var authorities = List.of(new SimpleGrantedAuthority(type));
         var expected = new UsernamePasswordAuthenticationToken(employeeId, null, authorities);
+
 
         when(request.getRequestURI()).thenReturn(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED[0]);
         when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
@@ -68,4 +71,21 @@ class UserAuthenticationFilterTest {
         verify(jwtTokenService, times(1)).getAuthoritiesFromToken(token);
     }
 
+    @Test
+    void shouldFilterRequestWithoutTokenAndSendExceptionToResolver() throws ServletException, IOException {
+        UsernamePasswordAuthenticationToken expected = null;
+
+        when(resolver.resolveException(eq(request), eq(response), eq(null), any())).thenReturn(new ModelAndView());
+        when(request.getRequestURI()).thenReturn(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED[0]);
+        when(request.getHeader("Authorization")).thenReturn(null);
+
+        var userFilter = new UserAuthenticationFilter(resolver, jwtTokenService);
+
+        userFilter.doFilter(request, response, chain);
+
+        assertEquals(null, SecurityContextHolder.getContext().getAuthentication());
+
+        verify(resolver).resolveException(eq(request), eq(response), eq(null), any());
+        verify(chain, times(0)).doFilter(request, response);
+    }
 }
