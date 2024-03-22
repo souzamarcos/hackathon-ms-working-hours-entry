@@ -1,13 +1,13 @@
 package com.fiap.hackathon.messenger;
 
+import com.fatboyindustrial.gsonjavatime.Converters;
 import com.fiap.hackathon.entity.WorkingHourRegistry;
 import com.fiap.hackathon.messenger.dto.WorkingHourRegistryMessageDto;
 import com.fiap.hackathon.usecase.adapter.messager.WorkingHourEntryMessenger;
 import com.fiap.hackathon.usecase.misc.exception.WorkingHourEntryMessagerException;
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
-import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
@@ -28,9 +28,10 @@ public class DefaultWorkingHourEntryMessenger implements WorkingHourEntryMesseng
     @Override
     public void sendMessage(WorkingHourRegistry registry) {
         try {
+            var gson = Converters.registerInstant(new GsonBuilder()).create();
             var dto = WorkingHourRegistryMessageDto.toMessageDto(registry);
-            queueMessagingTemplate.send(queueName, MessageBuilder.withPayload(new Gson().toJson(dto)).build());
-        } catch (MessagingException messagingException) {
+            queueMessagingTemplate.send(queueName, MessageBuilder.withPayload(gson.toJson(dto)).build());
+        } catch (Exception messagingException) {
             throw new WorkingHourEntryMessagerException(messagingException);
         }
     }
