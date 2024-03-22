@@ -30,9 +30,9 @@ public class TokenJwtUtils {
     }
 
     public List<SimpleGrantedAuthority> getAuthoritiesFromToken(String token) {
-        String type = Optional.ofNullable(readToken(token).getClaim("type").asString())
-                .orElseThrow(() -> new JWTVerificationException("Token claim 'type' required"));
-        return List.of(new SimpleGrantedAuthority(type));
+        int type = Optional.ofNullable(readToken(token).getClaim("type").asInt())
+            .orElseThrow(() -> new JWTVerificationException("Token claim 'type' required"));
+        return List.of(new SimpleGrantedAuthority(""+type));
     }
 
     public DecodedJWT readToken(String token) {
