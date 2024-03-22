@@ -20,7 +20,7 @@ Serviço para registro assíncrono de registro de ponto
 
 ## Endpoints
 
-Para visualizar os endpoints disponíveis na aplicação basta acessar o swagger em [http://localhost:8081/swagger](http://localhost:8081/swagger)
+Para visualizar os endpoints disponíveis na aplicação basta acessar o swagger em [http://localhost:8080/swagger](http://localhost:8080/swagger)
 
 
 ## Desenvolvimento
