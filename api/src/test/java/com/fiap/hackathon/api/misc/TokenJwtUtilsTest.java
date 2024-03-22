@@ -58,8 +58,8 @@ class TokenJwtUtilsTest {
 
     @Test
     void readTokenAuthorities() {
-        var expected = List.of(new SimpleGrantedAuthority("USER"));
-        String validToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImlzcyI6IlRFU1QtSVNTVUVSIiwiaWQiOiIxMTEiLCJ0eXBlIjoiVVNFUiIsImlhdCI6MTcwNjQxMzQzMiwianRpIjoiZjA0MjNlNGMtN2MxMC00YjM1LThkOTUtZGJmYWZjM2NmZGE0In0.PLZX8VKOBRVz4m4w-zVrUV3fymA9Q_Jw65DSvZJpdwc";
+        var expected = List.of(new SimpleGrantedAuthority("0"));
+        String validToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBdWRpZW5jZSIsImlzcyI6IlRFU1QtSVNTVUVSIiwiaWQiOiIxMTEiLCJ0eXBlIjowLCJpYXQiOjE3MDY0MTM0MzIsImp0aSI6ImYwNDIzZTRjLTdjMTAtNGIzNS04ZDk1LWRiZmFmYzNjZmRhNCJ9.aVahy0mNknoMT5tf69LTAmbpsyzu7EZf_091pvq_3dg";
 
         when(secretUtils.getTokenJwtSecret()).thenReturn(new TokenJwtSecret(TOKEN_SECRET, TOKEN_ISSUER));
 
